@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Customers{% endblock %}
+
+{% block body %}
+    <h1>Customers</h1>
+    <a href="{{ path('customer_new') }}">Create new</a>
+    <ul>
+        {% for customer in customers %}
+            <li>
+                {{ customer.first_name }} {{ customer.second_name }}
+                <a href="{{ path('customer_edit', {'id': customer._id}) }}">Edit</a>
+                <a href="{{ path('customer_delete', {'id': customer._id}) }}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

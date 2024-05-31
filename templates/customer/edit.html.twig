@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Customer{% endblock %}
+
+{% block body %}
+    <h1>Edit Customer</h1>
+    <form method="post">
+        <input type="text" name="first_name" value="{{ customer.first_name }}" placeholder="First Name" required>
+        <input type="text" name="second_name" value="{{ customer.second_name }}" placeholder="Second Name" required>
+        <input type="text" name="address" value="{{ customer.address }}" placeholder="Address" required>
+        <input type="text" name="permit_number" value="{{ customer.permit_number }}" placeholder="Permit Number" required>
+        <button type="submit">Save</button>
+    </form>
+    <a href="{{ path('customer_index') }}">Back to list</a>
+{% endblock %}

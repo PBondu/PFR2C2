@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Customer{% endblock %}
+
+{% block body %}
+    <h1>Create Customer</h1>
+    <form method="post">
+        <input type="text" name="first_name" placeholder="First Name" required>
+        <input type="text" name="second_name" placeholder="Second Name" required>
+        <input type="text" name="address" placeholder="Address" required>
+        <input type="text" name="permit_number" placeholder="Permit Number" required>
+        <button type="submit">Save</button>
+    </form>
+    <a href="{{ path('customer_index') }}">Back to list</a>
+{% endblock %}
