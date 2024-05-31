@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Billing{% endblock %}
+
+{% block body %}
+    <h1>Billing</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ billing.id }}</td>
+            </tr>
+            <tr>
+                <th>Contract_id</th>
+                <td>{{ billing.ContractId }}</td>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <td>{{ billing.Amount }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_billing_index') }}">back to list</a>
+
+    <a href="{{ path('app_billing_edit', {'id': billing.id}) }}">edit</a>
+
+    {{ include('billing/_delete_form.html.twig') }}
+{% endblock %}
