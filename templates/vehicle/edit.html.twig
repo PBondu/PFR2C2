@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Vehicle{% endblock %}
+
+{% block body %}
+    <h1>Edit Vehicle</h1>
+    <form method="post">
+        <input type="text" name="uid" value="{{ vehicle.uid }}" placeholder="UUID - Identifiant unique du document" required>
+        <input type="text" name="licence_plate" value="{{ vehicle.licence_plate }}" placeholder="Immatriculation du véhicule" required>
+        <input type="text" name=" informations" value="{{ vehicle. informations }}" placeholder="Notes sur le véhicule" required>
+        <input type="text" name="km" value="{{ vehicle.km }}" placeholder="Kilométrage du véhicule" required>
+        <button type="submit">Sauvegarder</button>
+    </form>
+    <a href="{{ path('vehicle_index') }}">Back to list</a>
+{% endblock %}

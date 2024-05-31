@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vehicles{% endblock %}
+
+{% block body %}
+    <h1>Vehicles</h1>
+    <a href="{{ path('vehicle_new') }}">Create new</a>
+    <ul>
+        {% for vehicle in vehicles %}
+            <li>
+                {{ vehicle.first_name }} {{ vehicle.second_name }}
+                <a href="{{ path('vehicle_edit', {'id': vehicle._id}) }}">Edit</a>
+                <a href="{{ path('vehicle_delete', {'id': vehicle._id}) }}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
