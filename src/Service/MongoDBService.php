@@ -7,16 +7,22 @@ use MongoDB\Client;
 class MongoDBService
 {
     private $client;
-    private $database;
+    private $databases = [];
 
-    public function __construct(string $uri, string $databaseName)
+    public function __construct(string $uri, array $databaseNames)
     {
         $this->client = new Client($uri);
-        $this->database = $this->client->selectDatabase($databaseName);
+        foreach ($databaseNames as $name) {
+            $this->databases[$name] = $this->client->selectDatabase($name);
+        }
     }
 
-    public function getDatabase()
+    public function getDatabase(string $name)
     {
-        return $this->database;
+        if (!isset($this->databases[$name])) {
+            throw new \InvalidArgumentException("Database $name not configured.");
+        }
+
+        return $this->databases[$name];
     }
 }
