@@ -5,6 +5,7 @@
 {% block body %}
     <h1>Edit Customer</h1>
     <form method="post">
+        <input type="text" name="id" value="{{ customer.id }}" placeholder="id" required>
         <input type="text" name="first_name" value="{{ customer.first_name }}" placeholder="First Name" required>
         <input type="text" name="second_name" value="{{ customer.second_name }}" placeholder="Second Name" required>
         <input type="text" name="address" value="{{ customer.address }}" placeholder="Address" required>

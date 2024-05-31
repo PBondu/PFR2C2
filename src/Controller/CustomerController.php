@@ -36,13 +36,24 @@ class CustomerController extends AbstractController
         return $this->render('customer/new.html.twig');
     }
 
+    #[Route('/show/{id}', name: 'show')]
+    public function show($id): Response
+    {
+        $customer = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        if (!$customer) {
+            throw $this->createNotFoundException('The customer does not exist');
+        }
+        return $this->render('customer/show.html.twig', ['customer' => $customer]);
+    }
+
+
     #[Route('/edit/{id}', name: 'edit')]
     public function edit(Request $request, $id): Response
     {
         $customer = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
-            $this->mongoDBService->getDatabase('customer')->customers->updateOne(['_id' => new \MongoDB\BSON\ObjectId($id)], ['$set' => $data]);
+            $this->mongoDBService->getDatabase('Customer')->customers->updateOne(['_id' => new \MongoDB\BSON\ObjectId($id)], ['$set' => $data]);
             return $this->redirectToRoute('customer_index');
         }
         return $this->render('customer/edit.html.twig', ['customer' => $customer]);

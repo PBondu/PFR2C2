@@ -5,13 +5,36 @@
 {% block body %}
     <h1>Customers</h1>
     <a href="{{ path('customer_new') }}">Create new</a>
-    <ul>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>nom</th>
+                <th>prénom</th>
+                <th>adresse</th>
+                <th>numéro permis</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for customer in customers %}
-            <li>
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.first_name }}</td>
+                <td>{{ customer.second_name }}</td>
+                <td>{{ customer.address }}</td>
+                <td>{{ customer.permit_number }}</td>
+                <td>
+                  <a href="{{ path('customer_show', {'id': customer._id}) }}">show</a>
+                  <a href="{{ path('customer_edit', {'id': customer._id}) }}">Edit</a>
+                  <a href="{{ path('customer_delete', {'id': customer._id}) }}">Delete</a>
+                </td>
+            </tr>
+            {# <li>
                 {{ customer.first_name }} {{ customer.second_name }}
                 <a href="{{ path('customer_edit', {'id': customer._id}) }}">Edit</a>
                 <a href="{{ path('customer_delete', {'id': customer._id}) }}">Delete</a>
-            </li>
+            </li> #}
         {% endfor %}
-    </ul>
+    </tbody>
+    </table>
 {% endblock %}

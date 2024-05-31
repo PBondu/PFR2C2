@@ -5,13 +5,34 @@
 {% block body %}
     <h1>Vehicles</h1>
     <a href="{{ path('vehicle_new') }}">Create new</a>
-    <ul>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>immatriculation</th>
+                <th>informations</th>
+                <th>Kilométrage</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for vehicle in vehicles %}
-            <li>
-                {{ vehicle.first_name }} {{ vehicle.second_name }}
-                <a href="{{ path('vehicle_edit', {'id': vehicle._id}) }}">Edit</a>
-                <a href="{{ path('vehicle_delete', {'id': vehicle._id}) }}">Delete</a>
-            </li>
+            <tr>
+                <td>{{ vehicle.uid }}</td>
+                <td>{{ vehicle.licence_plate }}</td>
+                <td>{{ vehicle.informations }}</td>
+                <td>{{ vehicle.km }}</td>
+                <td>
+                  <a href="{{ path('vehicle_show', {'id': vehicle._id}) }}">show</a>
+                  <a href="{{ path('vehicle_edit', {'id': vehicle._id}) }}">Edit</a>
+                  <a href="{{ path('vehicle_delete', {'id': vehicle._id}) }}">Delete</a>
+                </td>
+            </tr>
+            {# <li>
+                {{ customer.first_name }} {{ customer.second_name }}
+                <a href="{{ path('customer_edit', {'id': customer._id}) }}">Edit</a>
+                <a href="{{ path('customer_delete', {'id': customer._id}) }}">Delete</a>
+            </li> #}
         {% endfor %}
-    </ul>
+    </tbody>
+    </table>
 {% endblock %}

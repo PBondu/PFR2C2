@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create Customer{% endblock %}
+{% block title %}Create Vehicule{% endblock %}
 
 {% block body %}
-    <h1>Create Customer</h1>
+    <h1>Create Vehicule</h1>
     <form method="post">
-        <input type="text" name="uid" placeholder="UUID - Identifiant unique du document" required>
-        <input type="text" name="licence_plate" placeholder="Immatriculation du véhicule" required>
-        <input type="text" name="informations" placeholder="Notes sur le véhicule" required>
-        <input type="text" name="km" placeholder="Kilométrage du véhicule" required>
+        <input type="text" name="uid" placeholder="Identifiant véhicule" required>
+        <input type="text" name="licence_plate" placeholder="Immatriculation" required>
+        <input type="text" name="informations" placeholder="Infos sur le véhicule" required>
+        <input type="text" name="km" placeholder="Kilométrage" required>
         <button type="submit">Sauvegarder</button>
     </form>
-    <a href="{{ path('customer_index') }}">Back to list</a>
+    <a href="{{ path('vehicle_index') }}">Back to list</a>
 {% endblock %}

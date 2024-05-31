@@ -36,13 +36,23 @@ class VehicleController extends AbstractController
         return $this->render('vehicle/new.html.twig');
     }
 
+    #[Route('/show/{id}', name: 'show')]
+    public function show($id): Response
+    {
+        $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        if (!$vehicle) {
+            throw $this->createNotFoundException('The vehicle does not exist');
+        }
+        return $this->render('vehicle/show.html.twig', ['vehicle' => $vehicle]);
+    }
+
     #[Route('/edit/{id}', name: 'edit')]
     public function edit(Request $request, $id): Response
     {
         $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
-            $this->mongoDBService->getDatabase('vehicle')->vehicles->updateOne(['_id' => new \MongoDB\BSON\ObjectId($id)], ['$set' => $data]);
+            $this->mongoDBService->getDatabase('Vehicle')->vehicles->updateOne(['_id' => new \MongoDB\BSON\ObjectId($id)], ['$set' => $data]);
             return $this->redirectToRoute('vehicle_index');
         }
         return $this->render('vehicle/edit.html.twig', ['vehicle' => $vehicle]);
