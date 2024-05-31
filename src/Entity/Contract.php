@@ -24,12 +24,12 @@ class Contract
     private ?\DateTimeInterface $sign_datetime = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $loc_begin_datetime = null;
+    private ?\DateTimeInterface $locbegin_datetime = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $locend_datetime = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $returning_datetime = null;
 
     #[ORM\Column]
@@ -83,14 +83,14 @@ class Contract
         return $this;
     }
 
-    public function getLocBeginDatetime(): ?\DateTimeInterface
+    public function getLocbeginDatetime(): ?\DateTimeInterface
     {
-        return $this->loc_begin_datetime;
+        return $this->locbegin_datetime;
     }
 
-    public function setLocBeginDatetime(\DateTimeInterface $loc_begin_datetime): static
+    public function setLocbeginDatetime(\DateTimeInterface $locbegin_datetime): static
     {
-        $this->loc_begin_datetime = $loc_begin_datetime;
+        $this->locbegin_datetime = $locbegin_datetime;
 
         return $this;
     }
@@ -107,12 +107,12 @@ class Contract
         return $this;
     }
 
-    public function getReturningDatetime(): ?string
+    public function getReturningDatetime(): ?\DateTimeInterface
     {
         return $this->returning_datetime;
     }
 
-    public function setReturningDatetime(string $returning_datetime): static
+    public function setReturningDatetime(\DateTimeInterface $returning_datetime): static
     {
         $this->returning_datetime = $returning_datetime;
 

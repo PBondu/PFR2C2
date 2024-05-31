@@ -24,8 +24,8 @@
                 <td>{{ contract.signDatetime ? contract.signDatetime|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
-                <th>Loc_begin_datetime</th>
-                <td>{{ contract.locBeginDatetime ? contract.locBeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Locbegin_datetime</th>
+                <td>{{ contract.locbeginDatetime ? contract.locbeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>Locend_datetime</th>
@@ -33,7 +33,7 @@
             </tr>
             <tr>
                 <th>Returning_datetime</th>
-                <td>{{ contract.returningDatetime }}</td>
+                <td>{{ contract.returningDatetime ? contract.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>Price</th>

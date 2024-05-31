@@ -17,13 +17,15 @@ class ContractType extends AbstractType
             ->add('sign_datetime', null, [
                 'widget' => 'single_text',
             ])
-            ->add('loc_begin_datetime', null, [
+            ->add('locbegin_datetime', null, [
                 'widget' => 'single_text',
             ])
             ->add('locend_datetime', null, [
                 'widget' => 'single_text',
             ])
-            ->add('returning_datetime')
+            ->add('returning_datetime', null, [
+                'widget' => 'single_text',
+            ])
             ->add('price')
         ;
     }

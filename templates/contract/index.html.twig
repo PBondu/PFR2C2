@@ -12,7 +12,7 @@
                 <th>Vehicle_uid</th>
                 <th>Customer_uid</th>
                 <th>Sign_datetime</th>
-                <th>Loc_begin_datetime</th>
+                <th>Locbegin_datetime</th>
                 <th>Locend_datetime</th>
                 <th>Returning_datetime</th>
                 <th>Price</th>
@@ -26,9 +26,9 @@
                 <td>{{ contract.vehicleUid }}</td>
                 <td>{{ contract.customerUid }}</td>
                 <td>{{ contract.signDatetime ? contract.signDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ contract.locBeginDatetime ? contract.locBeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ contract.locbeginDatetime ? contract.locbeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ contract.locendDatetime ? contract.locendDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ contract.returningDatetime }}</td>
+                <td>{{ contract.returningDatetime ? contract.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ contract.price }}</td>
                 <td>
                     <a href="{{ path('app_contract_show', {'id': contract.id}) }}">show</a>
