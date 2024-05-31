@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "07bd98495f613b711f19c35c8e94e05f",
+    "content-hash": "e2a71d0e5fad24192c2827ce5ab67f28",
     "packages": [
         {
             "name": "composer/semver",
@@ -1378,6 +1378,83 @@
             "time": "2023-10-06T06:47:41+00:00"
         },
         {
+            "name": "mongodb/mongodb",
+            "version": "1.19.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mongodb/mongo-php-library.git",
+                "reference": "cbc8104c0b2c32b7cf572ff759324c872e8dc63a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/cbc8104c0b2c32b7cf572ff759324c872e8dc63a",
+                "reference": "cbc8104c0b2c32b7cf572ff759324c872e8dc63a",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.0",
+                "ext-hash": "*",
+                "ext-json": "*",
+                "ext-mongodb": "^1.18.0",
+                "php": "^7.4 || ^8.0",
+                "psr/log": "^1.1.4|^2|^3",
+                "symfony/polyfill-php80": "^1.27",
+                "symfony/polyfill-php81": "^1.27"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^12.0",
+                "rector/rector": "^0.19",
+                "squizlabs/php_codesniffer": "^3.7",
+                "symfony/phpunit-bridge": "^5.2",
+                "vimeo/psalm": "^5.13"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "MongoDB\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Andreas Braun",
+                    "email": "andreas.braun@mongodb.com"
+                },
+                {
+                    "name": "Jeremy Mikola",
+                    "email": "jmikola@gmail.com"
+                },
+                {
+                    "name": "Jérôme Tamarelle",
+                    "email": "jerome.tamarelle@mongodb.com"
+                }
+            ],
+            "description": "MongoDB driver library",
+            "homepage": "https://jira.mongodb.org/browse/PHPLIB",
+            "keywords": [
+                "database",
+                "driver",
+                "mongodb",
+                "persistence"
+            ],
+            "support": {
+                "issues": "https://github.com/mongodb/mongo-php-library/issues",
+                "source": "https://github.com/mongodb/mongo-php-library/tree/1.19.0"
+            },
+            "time": "2024-05-10T19:49:08+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "3.6.0",
             "source": {
@@ -2005,6 +2082,42 @@
                 "source": "https://github.com/php-fig/log/tree/3.0.0"
             },
             "time": "2021-07-14T16:46:02+00:00"
+        },
+        {
+            "name": "soyuka/stubs-mongodb",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/soyuka/stubs-mongodb.git",
+                "reference": "16cc7ca08c59f69774779175dd65c8dedd21de13"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/soyuka/stubs-mongodb/zipball/16cc7ca08c59f69774779175dd65c8dedd21de13",
+                "reference": "16cc7ca08c59f69774779175dd65c8dedd21de13",
+                "shasum": ""
+            },
+            "provide": {
+                "ext-mongodb": "1.7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "MongoDB\\": "MongoDB/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "ext-mongodb stubs taken from https://github.com/JetBrains/phpstorm-stubs",
+            "support": {
+                "source": "https://github.com/soyuka/stubs-mongodb/tree/v1.0.0"
+            },
+            "time": "2020-09-13T13:49:16+00:00"
         },
         {
             "name": "symfony/asset",

@@ -20,5 +20,11 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    # Includes the mongoDB connection service
+    App\Service\MongoDBService:
+        arguments:
+            $uri: '%env(MONGODB_URI)%'
+            $databaseName: '%env(MONGODB_DATABASE)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
