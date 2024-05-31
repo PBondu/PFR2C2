@@ -21,7 +21,7 @@ class CustomerController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(): Response
     {
-        $customers = $this->mongoDBService->getDatabase()->customers->find()->toArray();
+        $customers = $this->mongoDBService->getDatabase('Customer')->customers->find()->toArray();
         return $this->render('customer/index.html.twig', ['customers' => $customers]);
     }
 
@@ -30,7 +30,7 @@ class CustomerController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
-            $this->mongoDBService->getDatabase()->customers->insertOne($data);
+            $this->mongoDBService->getDatabase('Customer')->customers->insertOne($data);
             return $this->redirectToRoute('customer_index');
         }
         return $this->render('customer/new.html.twig');
@@ -39,10 +39,10 @@ class CustomerController extends AbstractController
     #[Route('/edit/{id}', name: 'edit')]
     public function edit(Request $request, $id): Response
     {
-        $customer = $this->mongoDBService->getDatabase()->customers->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        $customer = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
-            $this->mongoDBService->getDatabase()->customers->updateOne(['_id' => new \MongoDB\BSON\ObjectId($id)], ['$set' => $data]);
+            $this->mongoDBService->getDatabase('customer')->customers->updateOne(['_id' => new \MongoDB\BSON\ObjectId($id)], ['$set' => $data]);
             return $this->redirectToRoute('customer_index');
         }
         return $this->render('customer/edit.html.twig', ['customer' => $customer]);
@@ -51,7 +51,7 @@ class CustomerController extends AbstractController
     #[Route('/delete/{id}', name: 'delete')]
     public function delete($id): Response
     {
-        $this->mongoDBService->getDatabase()->customers->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        $this->mongoDBService->getDatabase('Customer')->customers->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
         return $this->redirectToRoute('customer_index');
     }
 }
