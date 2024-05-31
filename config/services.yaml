@@ -24,7 +24,7 @@ services:
     App\Service\MongoDBService:
         arguments:
             $uri: '%env(MONGODB_URI)%'
-            $databaseName: '%env(MONGODB_DATABASE)%'
+            $databaseNames: '%env(json:MONGODB_DATABASES)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
