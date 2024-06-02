@@ -4,13 +4,23 @@
 
 {% block body %}
     <h1>Create Customer</h1>
-    <form method="post">
-        <input type="text" name="id" placeholder="id" required>
-        <input type="text" name="first_name" placeholder="First Name" required>
-        <input type="text" name="second_name" placeholder="Second Name" required>
-        <input type="text" name="address" placeholder="Address" required>
-        <input type="text" name="permit_number" placeholder="Permit Number" required>
-        <button type="submit">Save</button>
+    <form method="post" class="form_mongo">
+        <label for="id" class="form-label required">Customer id</label>
+        <input class="form-control mb-3" type="text" name="id" required>
+
+        <label for="first_name" class="form-label required">first_name</label>
+        <input class="form-control mb-3" type="text" name="first_name" required>
+
+        <label for="second_name" class="form-label required">second_name</label>
+        <input class="form-control mb-3" type="text" name="second_name" required>
+        
+        <label for="address" class="form-label required">address</label>
+        <input class="form-control mb-3" type="text" name="address" required>
+
+        <label for="permit_number" class="form-label required">permit_number</label>
+        <input class="form-control mb-3" type="text" name="permit_number" required>
+        
+        <button class="btn" type="submit">Update</button>
     </form>
     <a href="{{ path('customer_index') }}">Back to list</a>
 {% endblock %}

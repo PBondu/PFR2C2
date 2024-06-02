@@ -1,0 +1,43 @@
+{# templates/dashboard/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block body %}
+    <h1>Tableau de Bord</h1>
+
+    <h2>MySQL Data 1</h2>
+    <ul>
+        {% for contract in mysqlData1 %}
+            <li>{{ contract.id }}</li>
+            <li>{{ contract.vehicleUid }}</li> 
+            <li>{{ contract.customerUid }}</li> 
+
+            <li>{{ contract.price }}</li> 
+            
+
+        {% endfor %}
+    </ul>
+
+    <h2>MySQL Data 2</h2>
+    <ul>
+        {% for billing in mysqlData2 %}
+            <li>{{ billing.id }}</li> {# Modifiez selon vos champs #}
+        {% endfor %}
+    </ul>
+
+    <h2>MongoDB Data 1</h2>
+    <ul>
+        {% for item in mongoData1 %}
+            <li>{{ item.id }}</li> {# Modifiez selon vos champs #}
+        {% endfor %}
+    </ul>
+
+    <h2>MongoDB Data 2</h2>
+    <ul>
+        {% for item in mongoData2 %}
+            <li>{{ item.uid }}</li> {# Modifiez selon vos champs #}
+        {% endfor %}
+    </ul>
+{% endblock %}

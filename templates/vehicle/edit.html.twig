@@ -4,12 +4,21 @@
 
 {% block body %}
     <h1>Edit Vehicle</h1>
-    <form method="post">
-        <input type="text" name="uid" value="{{ vehicle.uid }}" placeholder="UUID - Identifiant unique du document" required>
-        <input type="text" name="licence_plate" value="{{ vehicle.licence_plate }}" placeholder="Immatriculation du véhicule" required>
-        <input type="text" name=" informations" value="{{ vehicle. informations }}" placeholder="Notes sur le véhicule" required>
-        <input type="text" name="km" value="{{ vehicle.km }}" placeholder="Kilométrage du véhicule" required>
-        <button type="submit">Sauvegarder</button>
+    <form method="post" class="form_mongo">
+        <label for="id" class="form-label required">ID</label>
+        <input class="form-control mb-3" type="text" name="uid" value="{{ vehicle.uid }}" required>
+
+        <label for="id" class="form-label required">Immatriculation</label>
+        <input class="form-control mb-3" type="text" name="licence_plate" value="{{ vehicle.licence_plate }}" required>
+
+        <label for="id" class="form-label required">Informations</label>
+        <input class="form-control mb-3" type="text" name=" informations" value="{{ vehicle. informations }}" required>
+        
+        <label for="id" class="form-label required">Kilométrage</label>
+        <input class="form-control mb-3" type="text" name="km" value="{{ vehicle.km }}" required>
+
+        <button class="btn" type="submit">Save</button>
     </form>
+    {{ include('vehicle/_delete_form.html.twig') }}
     <a href="{{ path('vehicle_index') }}">Back to list</a>
 {% endblock %}

@@ -1,0 +1,34 @@
+{# templates/dashboard/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block body %}
+   <h1>Dashboard</h1>
+    <ul>
+        <li><a href="{{ path('app_contract_index') }}">Contracts (MySQL)</a></li>
+        <li><a href="{{ path('app_billing_index') }}">Billing (MySQL)</a></li>
+        <li><a href="{{ path('customer_index') }}">Customers (MongoDB)</a></li>
+        <li><a href="{{ path('vehicle_index') }}">Vehicles (MongoDB)</a></li>
+
+    </ul>
+{% endblock %}
+
+
+{# templates/dashboard/index.html.twig
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <ul>
+        <li><a href="{{ path('app_contract_index') }}">Contracts (MySQL)</a></li>
+        <li><a href="{{ path('customer_index') }}">Customers (MongoDB)</a></li>
+    </ul>
+</body>
+</html> #}

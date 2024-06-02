@@ -4,7 +4,6 @@
 
 {% block body %}
     <h1>Customers</h1>
-    <a href="{{ path('customer_new') }}">Create new</a>
     <table class="table">
         <thead>
             <tr>
@@ -26,7 +25,6 @@
                 <td>
                   <a href="{{ path('customer_show', {'id': customer._id}) }}">show</a>
                   <a href="{{ path('customer_edit', {'id': customer._id}) }}">Edit</a>
-                  <a href="{{ path('customer_delete', {'id': customer._id}) }}">Delete</a>
                 </td>
             </tr>
             {# <li>
@@ -37,4 +35,7 @@
         {% endfor %}
     </tbody>
     </table>
+    <a href="{{ path('customer_new') }}">Create new</a>
+
+    <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
 {% endblock %}

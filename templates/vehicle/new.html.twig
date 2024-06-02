@@ -4,12 +4,20 @@
 
 {% block body %}
     <h1>Create Vehicule</h1>
-    <form method="post">
-        <input type="text" name="uid" placeholder="Identifiant véhicule" required>
-        <input type="text" name="licence_plate" placeholder="Immatriculation" required>
-        <input type="text" name="informations" placeholder="Infos sur le véhicule" required>
-        <input type="text" name="km" placeholder="Kilométrage" required>
-        <button type="submit">Sauvegarder</button>
+    <form method="post" class="form_mongo">
+        <label for="id" class="form-label required">ID</label>
+        <input class="form-control mb-3" type="text" name="uid" required>
+
+        <label for="id" class="form-label required">Immatriculation</label>
+        <input class="form-control mb-3" type="text" name="licence_plate" required>
+
+        <label for="id" class="form-label required">Informations</label>
+        <input class="form-control mb-3" type="text" name=" informations" required>
+        
+        <label for="id" class="form-label required">Kilométrage</label>
+        <input class="form-control mb-3" type="text" name="km" required>
+
+        <button class="btn" type="submit">Save</button>
     </form>
     <a href="{{ path('vehicle_index') }}">Back to list</a>
 {% endblock %}

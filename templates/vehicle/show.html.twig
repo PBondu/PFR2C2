@@ -26,9 +26,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('vehicle_index') }}">back to list</a>
-
     <a href="{{ path('vehicle_edit', {'id': vehicle._id}) }}">edit</a>
 
     {{ include('vehicle/_delete_form.html.twig') }}
+
+    <a href="{{ path('vehicle_index') }}">back to list</a>
+
 {% endblock %}
