@@ -5,9 +5,7 @@
 {% block body %}
     <h1>Edit Vehicle</h1>
     <form method="post" class="form_mongo">
-        <label for="id" class="form-label required">ID</label>
-        <input class="form-control mb-3" type="text" name="uid" value="{{ vehicle.uid }}" required>
-
+    
         <label for="id" class="form-label required">Immatriculation</label>
         <input class="form-control mb-3" type="text" name="licence_plate" value="{{ vehicle.licence_plate }}" required>
 
@@ -17,7 +15,7 @@
         <label for="id" class="form-label required">Kilométrage</label>
         <input class="form-control mb-3" type="text" name="km" value="{{ vehicle.km }}" required>
 
-        <button class="btn" type="submit">Save</button>
+        <button class="btn" type="submit">Update</button>
     </form>
     {{ include('vehicle/_delete_form.html.twig') }}
     <a href="{{ path('vehicle_index') }}">Back to list</a>

@@ -30,6 +30,7 @@ class VehicleController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
+            $data['_id'] = $this->mongoDBService->getNextSequence('vehicle_id');
             $this->mongoDBService->getDatabase('Vehicle')->vehicles->insertOne($data);
             return $this->redirectToRoute('vehicle_index');
         }
@@ -39,7 +40,7 @@ class VehicleController extends AbstractController
     #[Route('/show/{id}', name: 'show')]
     public function show($id): Response
     {
-        $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => (int)$id]);
         if (!$vehicle) {
             throw $this->createNotFoundException('The vehicle does not exist');
         }
@@ -49,10 +50,10 @@ class VehicleController extends AbstractController
     #[Route('/edit/{id}', name: 'edit')]
     public function edit(Request $request, $id): Response
     {
-        $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => (int)$id]);
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
-            $this->mongoDBService->getDatabase('Vehicle')->vehicles->updateOne(['_id' => new \MongoDB\BSON\ObjectId($id)], ['$set' => $data]);
+            $this->mongoDBService->getDatabase('Vehicle')->vehicles->updateOne(['_id' => (int)$id], ['$set' => $data]);
             return $this->redirectToRoute('vehicle_index');
         }
         return $this->render('vehicle/edit.html.twig', ['vehicle' => $vehicle]);
@@ -61,7 +62,7 @@ class VehicleController extends AbstractController
     #[Route('/delete/{id}', name: 'delete')]
     public function delete($id): Response
     {
-        $this->mongoDBService->getDatabase('Vehicle')->vehicles->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        $this->mongoDBService->getDatabase('Vehicle')->vehicles->deleteOne(['_id' => (int)$id]);
         return $this->redirectToRoute('vehicle_index');
     }
 }

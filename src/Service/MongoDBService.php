@@ -25,4 +25,15 @@ class MongoDBService
 
         return $this->databases[$name];
     }
+    
+    public function getNextSequence($name)
+    {
+        $counterCollection = $this->getDatabase('Customer')->counters;
+        $counter = $counterCollection->findOneAndUpdate(
+            ['_id' => $name],
+            ['$inc' => ['seq' => 1]],
+            ['returnDocument' => \MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER, 'upsert' => true]
+        );
+        return $counter->seq;
+    }
 }

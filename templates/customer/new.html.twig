@@ -5,8 +5,8 @@
 {% block body %}
     <h1>Create Customer</h1>
     <form method="post" class="form_mongo">
-        <label for="id" class="form-label required">Customer id</label>
-        <input class="form-control mb-3" type="text" name="id" required>
+        {# <label for="id" class="form-label required">Customer id</label>
+        <input class="form-control mb-3" type="text" name="id" required> #}
 
         <label for="first_name" class="form-label required">first_name</label>
         <input class="form-control mb-3" type="text" name="first_name" required>
@@ -20,7 +20,7 @@
         <label for="permit_number" class="form-label required">permit_number</label>
         <input class="form-control mb-3" type="text" name="permit_number" required>
         
-        <button class="btn" type="submit">Update</button>
+        <button class="btn" type="submit">Create</button>
     </form>
     <a href="{{ path('customer_index') }}">Back to list</a>
 {% endblock %}
