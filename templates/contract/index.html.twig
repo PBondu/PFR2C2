@@ -5,6 +5,40 @@
 {% block body %}
     <h1>Contract index</h1>
 
+        <form method="post" action="{{ path('app_contract_index') }}">
+        <div class="form-group">
+            <label for="sql_id">Search for bills of a contract</label>
+            <input type="text" id="sql_id" name="sql_id" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if sqlData %}
+        <h2>Contract bill</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Contract_id</th>
+                    <th>amount</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in sqlData %}
+                    <tr>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.ContractId }}</td>
+                        <td>{{ data.amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% if sqlData != true %}
+      <h4>No Bill found</h4>
+    {% endif %}
+
     <table class="table">
         <thead>
             <tr>
