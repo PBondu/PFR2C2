@@ -7,22 +7,42 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\MongoDBService;
+use App\Repository\ContractRepository;
+
 
 #[Route('/vehicle', name: 'vehicle_')]
 class VehicleController extends AbstractController
 {
     private $mongoDBService;
+    private $contractRepository;
 
-    public function __construct(MongoDBService $mongoDBService)
+    public function __construct(MongoDBService $mongoDBService, ContractRepository $contractRepository)
     {
         $this->mongoDBService = $mongoDBService;
+        $this->contractRepository = $contractRepository;
     }
 
     #[Route('/', name: 'index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $vehicles = $this->mongoDBService->getDatabase('Vehicle')->vehicles->find()->toArray();
-        return $this->render('vehicle/index.html.twig', ['vehicles' => $vehicles]);
+
+        $sqlData = null;
+        if ($request->isMethod('POST')) {
+            $mongoId = $request->request->get('mongo_id');
+            $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => (int)$mongoId]);
+
+            if ($vehicle) {
+                $correspondingField = $vehicle['_id'];  // Remplacez 'correspondingField' par le nom réel du champ
+                $sqlData = $this->contractRepository->findBy(['vehicle_uid' => $correspondingField]);
+                dump($sqlData);
+            }
+        }
+
+        return $this->render('vehicle/index.html.twig', [
+            'vehicles' => $vehicles,
+            'sqlData' => $sqlData,
+        ]);
     }
 
     #[Route('/new', name: 'new')]
