@@ -19,7 +19,6 @@ class ContractController extends AbstractController
     {
         return $this->render('contract/index.html.twig', [
             'contracts' => $contractRepository->findAll(),
-            dump($contractRepository)
         ]);
     }
 

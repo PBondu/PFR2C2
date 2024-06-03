@@ -34,7 +34,6 @@ class CustomerController extends AbstractController
             if ($customer) {
                 $correspondingField = $customer['_id'];  // Remplacez 'correspondingField' par le nom réel du champ
                 $sqlData = $this->contractRepository->findBy(['customer_uid' => $correspondingField]);
-                dump($sqlData);
             }
         }
 

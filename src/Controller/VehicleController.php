@@ -35,7 +35,6 @@ class VehicleController extends AbstractController
             if ($vehicle) {
                 $correspondingField = $vehicle['_id'];  // Remplacez 'correspondingField' par le nom réel du champ
                 $sqlData = $this->contractRepository->findBy(['vehicle_uid' => $correspondingField]);
-                dump($sqlData);
             }
         }
 
