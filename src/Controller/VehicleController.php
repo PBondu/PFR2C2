@@ -33,8 +33,8 @@ class VehicleController extends AbstractController
             $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => (int)$mongoId]);
 
             if ($vehicle) {
-                $correspondingField = $vehicle['_id'];  // Remplacez 'correspondingField' par le nom réel du champ
-                $sqlData = $this->contractRepository->findBy(['vehicle_uid' => $correspondingField]);
+                $vehicle_uid = $vehicle['_id']; 
+                $sqlData = $this->contractRepository->findBy(['vehicle_uid' => $vehicle_uid]);
             }
         }
 
