@@ -25,6 +25,7 @@ class CustomerController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(Request $request): Response
     {
+        // Récupération de la DB par le service
         $customers = $this->mongoDBService->getDatabase('Customer')->customers->find()->toArray();
 
         // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé

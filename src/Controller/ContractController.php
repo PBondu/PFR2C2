@@ -61,11 +61,11 @@ class ContractController extends AbstractController
     }
     /*
         FIN RECHERCHE CONTRACT
-      */
+    */
 
     /*
         CONTRATS IMPAYES
-      */
+    */
     $unpayed = $request->request->get('unpayed');
     $unpayedContracts = [];
 
@@ -84,7 +84,48 @@ class ContractController extends AbstractController
     }
     /*
         FIN CONTRATS IMPAYES
-      */
+    */
+
+    /*
+        CONTRATS RETARDS
+    */
+    $late_input = $request->request->get('late');
+    $lateContracts = [];
+
+    if ($late_input == 'show') {
+      
+      foreach ($contractRepository->findAll() as $cont) {
+        if ($cont->locend_datetime < $cont->returning_datetime) {
+          $lateContracts[] = $cont;
+        }
+      }  
+    }
+    else{
+      $lateContracts = [];
+    }
+    /*
+        FIN CONTRATS RETARDS
+    */
+        /*
+        CONTRATS EN COURS
+    */
+    $current_contract_input = $request->request->get('current');
+    $currentContract = [];
+
+    if ($current_contract_input == 'show') {
+      
+      foreach ($contractRepository->findAll() as $cont) {
+        if ($cont->returning_datetime == null) {
+          $currentContract[] = $cont;
+        }
+      }  
+    }
+    else{
+      $currentContract = [];
+    }
+    /*
+        FIN CONTRATS EN COURS
+    */
 
     // Render des variables pour afficahge dans le twig
     return $this->render('contract/index.html.twig', [
@@ -92,6 +133,8 @@ class ContractController extends AbstractController
       'sqlData' => $sqlData, // Affichage de la recherche utilisateur
       'contractSelected' => $contractSelected,
       'unpayedContracts' => $unpayedContracts,
+      'lateContracts' => $lateContracts,
+      'currentContract' => $currentContract,
     ]);
   }
 

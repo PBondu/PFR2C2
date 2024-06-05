@@ -4,7 +4,43 @@
 
 {% block body %}
     <h1>Billing index</h1>
+    <br/>
 
+            <form method="post" action="{{ path('app_billing_index') }}">
+        <div class="form-group">
+            <label for="bill_id">Search for a bill</label>
+            <input type="text" id="bill_id" name="bill_id" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if billSelected %}
+        <h2>Billing by id</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Contract_id</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in billSelected %}
+                    <tr>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.ContractId }}</td>
+                        <td>{{ data.Amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% if billSelected != true %}
+      <h4>No billing found</h4>
+    {% endif %}
+    <br/>
+
+    <h2>Billing List</h2>
     <table class="table">
         <thead>
             <tr>

@@ -27,10 +27,10 @@ class Contract
     private ?\DateTimeInterface $locbegin_datetime = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $locend_datetime = null;
+    public ?\DateTimeInterface $locend_datetime = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $returning_datetime = null;
+    public ?\DateTimeInterface $returning_datetime = null;
 
     #[ORM\Column]
     private ?float $price = null;

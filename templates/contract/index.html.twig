@@ -5,20 +5,112 @@
 {% block body %}
     <h1>Contract index</h1>
     <br/>
-
-    <form method="post" action="{{ path('app_contract_index') }}" >
-        <input type="hidden" name="unpayed" value="show">
-        <button type="submit">Show unpayed contracts</button>
-    </form>
     
     <form method="post" action="{{ path('app_contract_index') }}" >
-        <input type="hidden" name="unpayed" value="hide">
-        <button type="submit">Hide unpayed contracts</button>
+        <button type="submit">Reset</button>
     </form>
+
+    <br/>    
+    <br/>
+
+    <h2>Search current contracts :</h2>
+    <form method="post" action="{{ path('app_contract_index') }}" >
+        <input type="hidden" name="current" value="show">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <br/>
+
+{% if currentContract %}
+        <h3>current contracts</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Vehicle_uid</th>
+                    <th>Customer_uid</th>
+                    <th>Sign_datetime</th>
+                    <th>Locbegin_datetime</th>
+                    <th>Locend_datetime</th>
+                    <th>Returning_datetime</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in currentContract %}
+                    <tr>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.vehicleUid }}</td>
+                        <td>{{ data.customerUid }}</td>
+                        <td>{{ data.signDatetime ? data.signDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.locbeginDatetime ? data.locbeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.locendDatetime ? data.locendDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.returningDatetime ? data.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% if currentContract != true %}
+      <h4>No contract found</h4>
+    {% endif %}
+
+    <h2>Search Late contracts :</h2>
+    <form method="post" action="{{ path('app_contract_index') }}" >
+        <input type="hidden" name="late" value="show">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <br/>
+
+{% if lateContracts %}
+        <h3>Late contracts</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Vehicle_uid</th>
+                    <th>Customer_uid</th>
+                    <th>Sign_datetime</th>
+                    <th>Locbegin_datetime</th>
+                    <th>Locend_datetime</th>
+                    <th>Returning_datetime</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in lateContracts %}
+                    <tr>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.vehicleUid }}</td>
+                        <td>{{ data.customerUid }}</td>
+                        <td>{{ data.signDatetime ? data.signDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.locbeginDatetime ? data.locbeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.locendDatetime ? data.locendDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.returningDatetime ? data.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% if lateContracts != true %}
+      <h4>No contract found</h4>
+    {% endif %}
+
+    <br/>
+    <h2>Search Unpayed contracts :</h2>
+    <form method="post" action="{{ path('app_contract_index') }}" >
+        <input type="hidden" name="unpayed" value="show">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    
+
     <br/>
 
 {% if unpayedContracts %}
-        <h2>Unpayed contracts</h2>
+        <h3>Unpayed contracts</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -53,7 +145,7 @@
     {% endif %}
     <br/>
 
-
+    <h2>Search Contract by id</h2>
     <form method="post" action="{{ path('app_contract_index') }}">
         <div class="form-group">
             <label for="contract_id">Search for a contract</label>
@@ -63,7 +155,7 @@
     </form>
 
     {% if contractSelected %}
-        <h2>Contract by id</h2>
+        <h3>Contract by id</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -96,8 +188,10 @@
     {% if contractSelected != true %}
       <h4>No contract found</h4>
     {% endif %}
+
     <br/>
 
+    <h2>Search contract's bill :</h2>
     <form method="post" action="{{ path('app_contract_index') }}">
         <div class="form-group">
             <label for="sql_id">Search for bills of a contract</label>
@@ -107,7 +201,7 @@
     </form>
 
     {% if sqlData %}
-        <h2>Contract bill</h2>
+        <h3>Contract bill</h3>
         <table class="table">
             <thead>
                 <tr>
