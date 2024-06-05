@@ -20,16 +20,16 @@ class Contract
     #[ORM\Column(length: 255)]
     private ?string $customer_uid = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $sign_datetime = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $locbegin_datetime = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $locend_datetime = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $returning_datetime = null;
 
     #[ORM\Column]
@@ -76,7 +76,7 @@ class Contract
         return $this->sign_datetime;
     }
 
-    public function setSignDatetime(\DateTimeInterface $sign_datetime): static
+    public function setSignDatetime(?\DateTimeInterface $sign_datetime): static
     {
         $this->sign_datetime = $sign_datetime;
 
@@ -88,7 +88,7 @@ class Contract
         return $this->locbegin_datetime;
     }
 
-    public function setLocbeginDatetime(\DateTimeInterface $locbegin_datetime): static
+    public function setLocbeginDatetime(?\DateTimeInterface $locbegin_datetime): static
     {
         $this->locbegin_datetime = $locbegin_datetime;
 
@@ -100,7 +100,7 @@ class Contract
         return $this->locend_datetime;
     }
 
-    public function setLocendDatetime(\DateTimeInterface $locend_datetime): static
+    public function setLocendDatetime(?\DateTimeInterface $locend_datetime): static
     {
         $this->locend_datetime = $locend_datetime;
 
@@ -112,7 +112,7 @@ class Contract
         return $this->returning_datetime;
     }
 
-    public function setReturningDatetime(\DateTimeInterface $returning_datetime): static
+    public function setReturningDatetime(?\DateTimeInterface $returning_datetime): static
     {
         $this->returning_datetime = $returning_datetime;
 
