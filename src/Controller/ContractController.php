@@ -20,32 +20,12 @@ class ContractController extends AbstractController
   #[Route('/', name: 'app_contract_index', methods: ['GET'])]
   public function index(ContractRepository $contractRepository, Request $request, BillingRepository $billingRepository): Response
   {
-    /*
-        RECHERCHE BILLING A PARTIR ID CONTRAT
-      */
-    // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
-    $sqlData = null;
-    // Condition pour vérifier que la méthode HTTP est POST
-    if ($request->isMethod('POST')) {
-      // Récupère l'input utilisateur et le stocke dans une variable
-      $id_from_input = $request->request->get('sql_id');
-      // Cherche l'objet concerné par l'id saisi ci-dessus
-      $contractArrayBill = $contractRepository->findBy(array('id' => (int)$id_from_input));
-      // Si l'objet est trouvé
-      if ($contractArrayBill) {
-        // Fait correspondre un objet de billing avec la clef primaire de l'objet trouvé
-        $sqlData = $billingRepository->findBy(['Contract_id' => $contractArrayBill]);
-      }
-    }
-    /*
-        FIN RECHERCHE BILLING
-      */
 
     /*
         RECHERCHE CONTRACT A PARTIR ID CONTRAT
-      */
+    */
     // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
-    $contractSelected = null;
+    $contractById = null;
     // Condition pour vérifier que la méthode HTTP est POST
     if ($request->isMethod('POST')) {
 
@@ -56,85 +36,18 @@ class ContractController extends AbstractController
       // Si l'objet est trouvé
       if ($contractArray) {
         // Fait correspondre un objet de billing avec la clef primaire de l'objet trouvé
-        $contractSelected = $contractArray;
+        $contractById = $contractArray;
       }
     }
     /*
         FIN RECHERCHE CONTRACT
     */
 
-    /*
-        CONTRATS IMPAYES
-    */
-    $unpayed = $request->request->get('unpayed');
-    $unpayedContracts = [];
-
-    if ($unpayed == 'show') {
-      
-      foreach ($contractRepository->findAll() as $cont) {
-        $compare = $billingRepository->findBy(['Contract_id' => $cont]);
-
-        if ($compare == []) {
-          $unpayedContracts[] = $cont;
-        }
-      }  
-    }
-    else{
-      $unpayedContracts = [];
-    }
-    /*
-        FIN CONTRATS IMPAYES
-    */
-
-    /*
-        CONTRATS RETARDS
-    */
-    $late_input = $request->request->get('late');
-    $lateContracts = [];
-
-    if ($late_input == 'show') {
-      
-      foreach ($contractRepository->findAll() as $cont) {
-        if ($cont->locend_datetime < $cont->returning_datetime) {
-          $lateContracts[] = $cont;
-        }
-      }  
-    }
-    else{
-      $lateContracts = [];
-    }
-    /*
-        FIN CONTRATS RETARDS
-    */
-        /*
-        CONTRATS EN COURS
-    */
-    $current_contract_input = $request->request->get('current');
-    $currentContract = [];
-
-    if ($current_contract_input == 'show') {
-      
-      foreach ($contractRepository->findAll() as $cont) {
-        if ($cont->returning_datetime == null) {
-          $currentContract[] = $cont;
-        }
-      }  
-    }
-    else{
-      $currentContract = [];
-    }
-    /*
-        FIN CONTRATS EN COURS
-    */
-
     // Render des variables pour afficahge dans le twig
     return $this->render('contract/index.html.twig', [
       'contracts' => $contractRepository->findAll(), // Affichage de la liste complète
-      'sqlData' => $sqlData, // Affichage de la recherche utilisateur
-      'contractSelected' => $contractSelected,
-      'unpayedContracts' => $unpayedContracts,
-      'lateContracts' => $lateContracts,
-      'currentContract' => $currentContract,
+      'contractById' => $contractById,
+
     ]);
   }
 
