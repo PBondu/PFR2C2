@@ -3,9 +3,10 @@
 {% block title %}Contract index{% endblock %}
 
 {% block body %}
-    <h1>Contract index</h1>
+    <h1>Search index</h1>
     <br/>
-    
+    <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
+    <br/>
     <form method="post" action="{{ path('app_search_index') }}" >
         <button type="submit">Reset</button>
     </form>
@@ -52,9 +53,9 @@
             </tbody>
         </table>
     {% endif %}
-    {% if currentContract != true %}
-      <h4>No contract found</h4>
-    {% endif %}
+
+    <br/>
+
 
     <h2>Search Late contracts :</h2>
     <form method="post" action="{{ path('app_search_index') }}" >
@@ -95,11 +96,64 @@
             </tbody>
         </table>
     {% endif %}
-    {% if lateContracts != true %}
-      <h4>No contract found</h4>
+
+    <br/>
+
+    <h2>Retards moyens :</h2>
+    <form method="post" action="{{ path('app_search_index') }}" >
+        <input type="hidden" name="lateAverage" value="show">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if latenessPerCustomer %}
+        <h3>Nombre de retards moyen par client:</h3>
+        <h4>{{ latenessPerCustomer }} retards moyen pour 1 client</h4>
     {% endif %}
 
     <br/>
+
+    <h2>Nombre de retards entre deux dates :</h2>
+    <form method="post" action="{{ path('app_search_index') }}" >
+        <input type="date" name="beginDateLate">
+        <input type="date" name="endDateLate">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if latenessNumber %}
+        <h3>Nombre de retards :</h3>
+        <h4>{{ latenessNumber }} retards</h4>
+    {% endif %}
+
+    <br/>
+
+    <h2>Temps de retards moyen par véhicules :</h2>
+    <form method="post" action="{{ path('app_search_index') }}" >
+        <input type="hidden" name="timeLateAverage" value="show">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <h3>Retards moyens :</h3>
+    {% if indicesOfAverageLateness %}
+      <table class="table">
+        <thead>
+          <tr>
+            {% for data in indicesOfAverageLateness %}
+              <th>Vehicle_uid : {{ data }}</th>    
+            {% endfor %}
+          </tr>
+    {% endif %}
+        </thead>
+        <tbody>
+        {% if averageLatenessPerVehicle %}
+          {% for data in averageLatenessPerVehicle %}
+            <td>{{ data }}</td>
+          {% endfor %}
+        {% endif %}
+        </tbody>
+      </table>
+
+    <br/>
+
     <h2>Search Unpayed contracts :</h2>
     <form method="post" action="{{ path('app_search_index') }}" >
         <input type="hidden" name="unpayed" value="show">
@@ -140,12 +194,10 @@
             </tbody>
         </table>
     {% endif %}
-    {% if unpayedContracts != true %}
-      <h4>No contract found</h4>
-    {% endif %}
+
     <br/>
 
-    <h2>Search Contract by id</h2>
+    <h2>Search Contract by contract's ID</h2>
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
             <label for="contract_id">Search for a contract</label>
@@ -155,7 +207,7 @@
     </form>
 
     {% if contractById %}
-        <h3>Contract by id</h3>
+        <h3>Contract by contract's ID</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -185,13 +237,10 @@
             </tbody>
         </table>
     {% endif %}
-    {% if contractById != true %}
-      <h4>No contract found</h4>
-    {% endif %}
 
     <br/>
 
-    <h2>Search contract's bill :</h2>
+    <h2>Search bills by contract's ID</h2>
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
             <label for="billing_id">Search for bills of a contract</label>
@@ -201,7 +250,7 @@
     </form>
 
     {% if billingById %}
-        <h3>Contract bill</h3>
+        <h3>Bills by contract's ID</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -222,9 +271,99 @@
             </tbody>
         </table>
     {% endif %}
-    {% if billingById is null %}
-      <h4>No Bill found</h4>
-    {% endif %}
+
     <br/>
+
+    <h2>Search Contract by customer's ID</h2>
+
+    <form method="post" action="{{ path('app_search_index') }}">
+        <div class="form-group">
+            <label for="customerId">Search for contracts of a customer</label>
+            <input type="text" id="customerId" name="customerId" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if customerById %}
+        <h3>Contract by customer's ID</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>vehicle_uid</th>
+                    <th>customer_uid</th>
+                    <th>sign_datetime</th>
+                    <th>locbegin_datetime</th>
+                    <th>locend_datetime</th>
+                    <th>returning_datetime</th>
+                    <th>price</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in customerById %}
+                    <tr>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.vehicleUid }}</td>
+                        <td>{{ data.customerUid }}</td>
+                        <td>{{ data.signDatetime ? data.signDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.locbeginDatetime ? data.locbeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.locendDatetime ? data.locendDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.returningDatetime ? data.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <br/>
+
+    <h2>Search Contract by vehicle's ID</h2>
+
+    <form method="post" action="{{ path('app_search_index') }}">
+        <div class="form-group">
+            <label for="vehicleId">Search for contracts of a vehicle</label>
+            <input type="text" id="vehicleId" name="vehicleId" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if vehicleById %}
+        <h3>Contract by vehicle's ID</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>vehicle_uid</th>
+                    <th>customer_uid</th>
+                    <th>sign_datetime</th>
+                    <th>locbegin_datetime</th>
+                    <th>locend_datetime</th>
+                    <th>returning_datetime</th>
+                    <th>price</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in vehicleById %}
+                    <tr>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.vehicleUid }}</td>
+                        <td>{{ data.customerUid }}</td>
+                        <td>{{ data.signDatetime ? data.signDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.locbeginDatetime ? data.locbeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.locendDatetime ? data.locendDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.returningDatetime ? data.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ data.price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <br/>
+
     <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
+
 {% endblock %}
