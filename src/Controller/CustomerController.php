@@ -25,11 +25,16 @@ class CustomerController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(Request $request): Response
     {
+      
+        /*
+          RECHERCHE CUSTOMER BY ID
+        */
+        
         // Récupération de la DB par le service
         $customers = $this->mongoDBService->getDatabase('Customer')->customers->find()->toArray();
 
         // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
-        $sqlData = null;
+        $customerById = null;
         // Condition pour vérifier que la méthode HTTP est POST
         if ($request->isMethod('POST')) {
           // Récupère l'input utilisateur et le stocke dans une variable
@@ -41,13 +46,18 @@ class CustomerController extends AbstractController
               // Transfère l'objet de l'array vers une variable
                 $customer_uid = $customer['_id']; 
               // Fait correspondre un objet de billing avec la clef primaire de l'objet trouvé
-                $sqlData = $this->contractRepository->findBy(['customer_uid' => $customer_uid]);
+                $customerById = $this->contractRepository->findBy(['customer_uid' => $customer_uid]);
             }
         }
+
+        /*
+          FIN RECHERCHE CUSTOMER BY ID
+        */
+
         // Render des variables pour afficahge dans le twig
         return $this->render('customer/index.html.twig', [
             'customers' => $customers, // Affichage de base
-            'sqlData' => $sqlData, // Affichage de la recherche utilisateur
+            'customerById' => $customerById, // Affichage de la recherche utilisateur
         ]);
     }
 

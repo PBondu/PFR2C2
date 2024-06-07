@@ -13,7 +13,7 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    {% if sqlData %}
+    {% if customerById %}
         <h2>Customer contract</h2>
         <table class="table">
             <thead>
@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for data in sqlData %}
+                {% for data in customerById %}
                     <tr>
                         <td>{{ data.id }}</td>
                         <td>{{ data.vehicleUid }}</td>
@@ -45,7 +45,7 @@
             </tbody>
         </table>
     {% endif %}
-    {% if sqlData != true %}
+    {% if customerById != true %}
       <h4>No contract found</h4>
     {% endif %}
     <h2>Customer List</h2>

@@ -15,7 +15,7 @@ class Contract
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $vehicle_uid = null;
+    public ?string $vehicle_uid = null;
 
     #[ORM\Column(length: 255)]
     private ?string $customer_uid = null;
