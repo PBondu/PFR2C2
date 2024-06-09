@@ -297,28 +297,77 @@ if ($time_late_ave_input == 'show') {
       RECHERCHE CUSTOMER PAR NOM
     */
 
-
-
         // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
-        $customerById = null;
+        $customerByNames = null;
         // Condition pour vérifier que la méthode HTTP est POST
         if ($request->isMethod('POST')) {
           // Récupère l'input utilisateur et le stocke dans une variable
-            $mongoId = $request->request->get('mongo_id');
+            $customerFirstName_input = $request->request->get('FirstName_input');
+            $customerLastName_input = $request->request->get('LastName_input');
+
           // Récupère la db grace au service et cherche l'objet concerné par l'id saisi ci-dessus
-            $customer = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['_id' => (int)$mongoId]);
+            $customerFirstName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['first_name' => $customerFirstName_input]);
+            $customerLastName= $this->mongoDBService->getDatabase('Customer')->customers->findOne(['second_name' => $customerLastName_input]);
           // Si l'objet est trouvé
-            if ($customer) {
-              // Transfère l'objet de l'array vers une variable
-                $customer_uid = $customer['_id']; 
+            if ($customerFirstName == $customerLastName && $customerFirstName != null) {
               // Fait correspondre un objet de billing avec la clef primaire de l'objet trouvé
-                $customerById = $this->contractRepository->findBy(['customer_uid' => $customer_uid]);
+              $customerByNames = [$customerFirstName];
             }
         }
-
         
     /*
       FIN RECHERCHE CUSTOMER PAR NOM
+    */
+
+    /*
+      RECHERCHE VEHICULE PAR IMMAT
+    */
+
+        // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
+        $vehicleByPlate = null;
+        // Condition pour vérifier que la méthode HTTP est POST
+        if ($request->isMethod('POST')) {
+          // Récupère l'input utilisateur et le stocke dans une variable
+            $immat_input = $request->request->get('immat_input');
+
+          // Récupère la db grace au service et cherche l'objet concerné par l'id saisi ci-dessus
+          $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['licence_plate' => $immat_input]);
+          // Si l'objet est trouvé
+            if ($vehicle) {
+              // Fait correspondre un objet de billing avec la clef primaire de l'objet trouvé
+              $vehicleByPlate = [$vehicle];
+            }
+        }
+        
+    /*
+      FIN RECHERCHE VEHICULE PAR IMMAT
+    */
+
+    /*
+      RECHERCHE VEHICULE PAR KILOMETRAGE
+    */
+
+        // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
+        $vehicleByKm = [];
+        // Condition pour vérifier que la méthode HTTP est POST
+        //if ($request->isMethod('POST')) {
+          // Récupère l'input utilisateur et le stocke dans une variable
+            $km_input = $request->request->get('km_input');
+          // Récupère la db grace au service et cherche l'objet concerné par l'id saisi ci-dessus
+            $vehicles = $this->mongoDBService->getDatabase('Vehicle')->vehicles->find()->toArray();
+
+            foreach($vehicles as $car){
+              if ($car && $car->km > $km_input){
+                $vehicleByKm[] = $car;
+              }
+            }
+            dump($vehicleByKm);
+          // Si l'objet est trouvé
+            
+        //}
+        
+    /*
+      FIN RECHERCHE VEHICULE PAR KILOMETRAGE
     */
 
     // Render des variables pour afficahge dans le twig
@@ -334,6 +383,9 @@ if ($time_late_ave_input == 'show') {
       'latenessNumber' => $latenessNumber,
       'averageLatenessPerVehicle' => $averageLatenessPerVehicle,
       'indicesOfAverageLateness' => $indicesOfAverageLateness,
+      'customerByNames' => $customerByNames,
+      'vehicleByPlate' => $vehicleByPlate,
+      'vehicleByKm' => $vehicleByKm,
     ]);
   }
 }

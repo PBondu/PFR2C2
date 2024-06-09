@@ -364,6 +364,113 @@
 
     <br/>
 
+    <h2>Customer by names</h2>
+    <form method="post" action="{{ path('app_search_index') }}">
+      <div class="form-group">
+      <input style ="margin:7px 0px" type="text" id ="FirstName_input" name="FirstName_input" class="form-control" placeholder="Prénom" required>
+      <input type="text" id ="LastName_input" name="LastName_input" class="form-control" placeholder="Nom" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+      {% if customerByNames %}
+        <h3>Customer found by name</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                  <th>id</th>
+                  <th>nom</th>
+                  <th>prénom</th>
+                  <th>adresse</th>
+                  <th>numéro permis</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in customerByNames %}
+                    <tr>
+                      <td>{{ data._id }}</td>
+                      <td>{{ data.first_name }}</td>
+                      <td>{{ data.second_name }}</td>
+                      <td>{{ data.address }}</td>
+                      <td>{{ data.permit_number }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <br/>
+
+    <h2>Véhicule par immatriculation</h2>
+    <form method="post" action="{{ path('app_search_index') }}">
+      <div class="form-group">
+      <input type="text" id ="immat_input" name="immat_input" class="form-control" placeholder="Immatriculation" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+      {% if vehicleByPlate %}
+        <h3>Vehicule :</h3>
+<table class="table">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>immatriculation</th>
+                <th>informations</th>
+                <th>Kilométrage</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for data in vehicleByPlate %}
+            <tr>
+                <td>{{ data._id }}</td>
+                <td>{{ data.licence_plate }}</td>
+                <td>{{ data.informations }}</td>
+                <td>{{ data.km }}</td>
+            </tr>
+        {% endfor %}    
+
+    </tbody>
+    </table>
+    {% endif %}
+
+    <br/>
+
+    <h2>Véhicule par Kilométrage</h2>
+    <form method="post" action="{{ path('app_search_index') }}">
+      <div class="form-group">
+      <input type="text" id ="km_input" name="km_input" class="form-control" placeholder="Km" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+      {% if vehicleByKm %}
+        <h3>Vehicules :</h3>
+<table class="table">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>immatriculation</th>
+                <th>informations</th>
+                <th>Kilométrage</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for data in vehicleByKm %}
+            <tr>
+                <td>{{ data._id }}</td>
+                <td>{{ data.licence_plate }}</td>
+                <td>{{ data.informations }}</td>
+                <td>{{ data.km }}</td>
+            </tr>
+        {% endfor %}    
+
+    </tbody>
+    </table>
+    {% endif %}
+
+    <br>
+
     <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
 
 {% endblock %}
