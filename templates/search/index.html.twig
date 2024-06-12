@@ -5,8 +5,10 @@
 {% block body %}
     <h1>Search index</h1>
     <br/>
+
     <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
     <br/>
+
     <form method="post" action="{{ path('app_search_index') }}" >
         <button type="submit">Reset</button>
     </form>
@@ -119,9 +121,9 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    {% if latenessNumber %}
+    {% if latenessBetweenDates %}
         <h3>Nombre de retards :</h3>
-        <h4>{{ latenessNumber }} retards</h4>
+        <h4>{{ latenessBetweenDates }} retards</h4>
     {% endif %}
 
     <br/>
@@ -206,7 +208,7 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    {% if contractById %}
+    {% if contractByContractId %}
         <h3>Contract by contract's ID</h3>
         <table class="table">
             <thead>
@@ -222,7 +224,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for data in contractById %}
+                {% for data in contractByContractId %}
                     <tr>
                         <td>{{ data.id }}</td>
                         <td>{{ data.vehicleUid }}</td>
@@ -249,7 +251,7 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    {% if billingById %}
+    {% if billingByContractId %}
         <h3>Bills by contract's ID</h3>
         <table class="table">
             <thead>
@@ -261,7 +263,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for data in billingById %}
+                {% for data in billingByContractId %}
                     <tr>
                         <td>{{ data.id }}</td>
                         <td>{{ data.ContractId }}</td>
@@ -278,13 +280,13 @@
 
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
-            <label for="customerId">Search for contracts of a customer</label>
-            <input type="text" id="customerId" name="customerId" class="form-control" required>
+            <label for="customer_id">Search for contracts of a customer</label>
+            <input type="text" id="customer_id" name="customer_id" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    {% if customerById %}
+    {% if contractByCustomerId %}
         <h3>Contract by customer's ID</h3>
         <table class="table">
             <thead>
@@ -301,7 +303,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for data in customerById %}
+                {% for data in contractByCustomerId %}
                     <tr>
                         <td>{{ data.id }}</td>
                         <td>{{ data.vehicleUid }}</td>
@@ -323,13 +325,13 @@
 
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
-            <label for="vehicleId">Search for contracts of a vehicle</label>
-            <input type="text" id="vehicleId" name="vehicleId" class="form-control" required>
+            <label for="vehicle_id">Search for contracts of a vehicle</label>
+            <input type="text" id="vehicle_id" name="vehicle_id" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    {% if vehicleById %}
+    {% if contractByVehicleId %}
         <h3>Contract by vehicle's ID</h3>
         <table class="table">
             <thead>
@@ -346,7 +348,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for data in vehicleById %}
+                {% for data in contractByVehicleId %}
                     <tr>
                         <td>{{ data.id }}</td>
                         <td>{{ data.vehicleUid }}</td>
@@ -411,7 +413,7 @@
 
       {% if vehicleByPlate %}
         <h3>Vehicule :</h3>
-<table class="table">
+        <table class="table">
         <thead>
             <tr>
                 <th>id</th>
@@ -446,7 +448,7 @@
 
       {% if vehicleByKm %}
         <h3>Vehicules :</h3>
-<table class="table">
+        <table class="table">
         <thead>
             <tr>
                 <th>id</th>
@@ -465,11 +467,11 @@
             </tr>
         {% endfor %}    
 
-    </tbody>
-    </table>
-    {% endif %}
+        </tbody>
+        </table>
+      {% endif %}
 
-    <br>
+    <br/>
 
     <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
 
