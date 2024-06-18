@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ContractRepository;
 use App\Repository\BillingRepository;
 use App\Service\MongoDBService;
+use App\Service\UserRequestProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,31 +17,54 @@ class SearchController extends AbstractController
   private $mongoDBService;
   private $contractRepository;
   private $billingRepository;
+  private $UserRequestProvider;
 
-  public function __construct(MongoDBService $mongoDBService, ContractRepository $contractRepository, BillingRepository $billingRepository)
-  {
+  public function __construct(
+    MongoDBService $mongoDBService,
+    ContractRepository $contractRepository,
+    BillingRepository $billingRepository,
+    UserRequestProvider $UserRequestProvider
+  ) {
     $this->mongoDBService = $mongoDBService;
     $this->contractRepository = $contractRepository;
     $this->billingRepository = $billingRepository;
+    $this->UserRequestProvider = $UserRequestProvider;
   }
 
   #[Route('/', name: 'app_search_index', methods: ['GET', 'POST'])]
   public function index(Request $request): Response
   {
-    $billingByContractId = $this->searchBillingByContractId($request);
-    $contractByContractId = $this->searchContractByContractId($request);
-    $contractByCustomerId = $this->searchContractByCustomerId($request);
-    $contractByVehicleId = $this->searchContractByVehicleId($request);
-    $unpayedContracts = $this->searchUnpayedContracts($request);
-    $lateContracts = $this->searchLateContracts($request);
-    $currentContract = $this->searchCurrentContracts($request);
-    $latenessPerCustomer = $this->calculateLatenessPerCustomer($request);
-    $latenessBetweenDates = $this->calculateLatenessBetweenDates($request);
-    $averageLatenessPerVehicle = $this->calculateAverageLatenessPerVehicle($request);
+    dump($this->searchBillingByContractId(3));
+    $billingId = $this->UserRequestProvider->getBillingId($request);
+    $contractId = $this->UserRequestProvider->getContractId($request);
+    $customerId = $this->UserRequestProvider->getCustomerId($request);
+    $vehicleId = $this->UserRequestProvider->getVehicleId($request);
+    $showUnpayed = $this->UserRequestProvider->getShowParameter($request, 'unpayed');
+    $showLate = $this->UserRequestProvider->getShowParameter($request, 'late');
+    $showCurrent = $this->UserRequestProvider->getShowParameter($request, 'current');
+    $showLateAverage = $this->UserRequestProvider->getShowParameter($request, 'lateAverage');
+    $beginDateLate = $this->UserRequestProvider->getBeginDateLate($request);
+    $endDateLate = $this->UserRequestProvider->getEndDateLate($request);
+    $showTimeLateAverage = $this->UserRequestProvider->getShowParameter($request, 'timeLateAverage');
+    $firstName = $this->UserRequestProvider->getFirstName($request);
+    $lastName = $this->UserRequestProvider->getLastName($request);
+    $licencePlate = $this->UserRequestProvider->getLicencePlate($request);
+    $kmInput = $this->UserRequestProvider->getKmInput($request);
+
+    $billingByContractId = $this->searchBillingByContractId($billingId);
+    $contractByContractId = $this->searchContractByContractId($contractId);
+    $contractByCustomerId = $this->searchContractByCustomerId($customerId);
+    $contractByVehicleId = $this->searchContractByVehicleId($vehicleId);
+    $unpayedContracts = $this->searchUnpayedContracts($showUnpayed);
+    $lateContracts = $this->searchLateContracts($showLate);
+    $currentContract = $this->searchCurrentContracts($showCurrent);
+    $latenessPerCustomer = $this->calculateLatenessPerCustomer($showLateAverage);
+    $latenessBetweenDates = $this->calculateLatenessBetweenDates($beginDateLate, $endDateLate);
+    $averageLatenessPerVehicle = $this->calculateAverageLatenessPerVehicle($showTimeLateAverage);
     $indicesOfAverageLateness = array_keys($averageLatenessPerVehicle);
-    $customerByNames = $this->searchCustomerByName($request);
-    $vehicleByPlate = $this->searchVehicleByPlate($request);
-    $vehicleByKm = $this->searchVehicleByKm($request);
+    $customerByNames = $this->searchCustomerByName($firstName, $lastName);
+    $vehicleByPlate = $this->searchVehicleByPlate($licencePlate);
+    $vehicleByKm = $this->searchVehicleByKm($kmInput);
 
     return $this->render('search/index.html.twig', [
       'billingByContractId' => $billingByContractId,
@@ -63,70 +87,74 @@ class SearchController extends AbstractController
   /**
    * Recherche une ou plusieurs factures à partir d'un ID contrat
    * 
-   * @param input ID du contrat rentré par l'utilisateur
+   * @param int ID du contrat rentré par l'utilisateur
    * @return array Tableau des objets billing à afficher
    */
-  private function searchBillingByContractId(Request $request)
+  public function searchBillingByContractId(?int $billingId)
   {
-    $billingByContractId = null;
-    $userInput = $request->request->get('billing_id');
-    $contractFound = $this->contractRepository->findBy(['id' => (int)$userInput]);
-    if ($contractFound) {
-      $billingByContractId = $this->billingRepository->findBy(['Contract_id' => $contractFound]);
+    if ($billingId !== null) {
+      $billingByContractId = $this->billingRepository->findBy(['Contract_id' => $billingId]);
+      if ($billingByContractId !== null) {
+        return (array)$billingByContractId;
+      } else {
+        return [];
+      }
     }
-    return $billingByContractId;
+    return null;
   }
 
   /**
    * Recherche un contrat à partir de son ID
    * 
-   * @param input ID du contrat rentré par l'utilisateur
+   * @param int ID du contrat rentré par l'utilisateur
    * @return array Tableau contenant le contrat à afficher
    */
-  private function searchContractByContractId(Request $request)
+  public function searchContractByContractId(?int $contractId)
   {
-    $contractByContractId = null;
-    $userInput = $request->request->get('contract_id');
-    $contractByContractId = $this->contractRepository->findBy(['id' => (int)$userInput]);
-    if ($contractByContractId) {
-      return $contractByContractId;
+    if ($contractId !== null) {
+      $contractByContractId = $this->contractRepository->findBy(['id' => $contractId]);
+      if ($contractByContractId !== null) {
+        return (array)$contractByContractId;
+      } else {
+        return [];
+      }
     }
+    return null;
   }
 
   /**
    * Recherche un ou plusieurs contrats à partir de l'ID du client
    * 
-   * @param input ID du client rentré par l'utilisateur
+   * @param int ID du client rentré par l'utilisateur
    * @return array|null Tableau contenant les contrats à afficher
    */
-  private function searchContractByCustomerId(Request $request): array|null
+  private function searchContractByCustomerId(?int $customerId): array|null
   {
     $contractByCustomerId = null;
-    $userInput = $request->request->get('customer_id');
-    $customerFound = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['_id' => (int)$userInput]);
+
+    $customerFound = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['_id' => $customerId]);
     if ($customerFound) {
       $idCustomerFound = $customerFound['_id'];
       $contractByCustomerId = $this->contractRepository->findBy(['customer_uid' => $idCustomerFound]);
     }
-    return $contractByCustomerId;
+    return (array)$contractByCustomerId;
   }
 
   /**
    * Recherche un ou plusieurs contrats à partir de l'ID d'un véhicule
    * 
-   * @param input ID du véhicule rentré par l'utilisateur
+   * @param int ID du véhicule rentré par l'utilisateur
    * @return array|null Tableau contenant les contrats à afficher
    */
-  private function searchContractByVehicleId(Request $request): array|null
+  private function searchContractByVehicleId(?int $vehicleId): array|null
   {
     $contractByVehicleId = null;
-    $userInput = $request->request->get('vehicle_id');
-    $vehicleFound = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => (int)$userInput]);
+    $vehicleFound = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => $vehicleId]);
     if ($vehicleFound) {
       $idVehicleFound = $vehicleFound['_id'];
       $contractByVehicleId = $this->contractRepository->findBy(['vehicle_uid' => $idVehicleFound]);
     }
-    return $contractByVehicleId;
+    return (array)$contractByVehicleId;
   }
 
   /**
@@ -134,10 +162,10 @@ class SearchController extends AbstractController
    * 
    * @return array Tableau contenant les contrats à afficher
    */
-  private function searchUnpayedContracts(Request $request)
+  private function searchUnpayedContracts(bool $showUnpayed)
   {
     $unpayedContracts = [];
-    if ($request->request->get('unpayed') == 'show') {
+    if ($showUnpayed) {
       foreach ($this->contractRepository->findAll() as $cont) {
         $billingFoundByContractId = $this->billingRepository->findBy(['Contract_id' => $cont]);
         if (empty($billingFoundByContractId)) {
@@ -145,7 +173,7 @@ class SearchController extends AbstractController
         }
       }
     }
-    return $unpayedContracts;
+    return (array)$unpayedContracts;
   }
 
   /**
@@ -153,17 +181,17 @@ class SearchController extends AbstractController
    * 
    * @return array Tableau contenant les contrats à afficher
    */
-  private function searchLateContracts(Request $request)
+  private function searchLateContracts(bool $showLate)
   {
     $lateContracts = [];
-    if ($request->request->get('late') == 'show') {
+    if ($showLate) {
       foreach ($this->contractRepository->findAll() as $cont) {
         if ($cont->locend_datetime < $cont->returning_datetime) {
           $lateContracts[] = $cont;
         }
       }
     }
-    return $lateContracts;
+    return (array)$lateContracts;
   }
 
   /**
@@ -171,17 +199,17 @@ class SearchController extends AbstractController
    * 
    * @return array Tableau contenant les contrats à afficher
    */
-  private function searchCurrentContracts(Request $request)
+  private function searchCurrentContracts(bool $showCurrent)
   {
     $currentContract = [];
-    if ($request->request->get('current') == 'show') {
+    if ($showCurrent) {
       foreach ($this->contractRepository->findAll() as $cont) {
         if ($cont->returning_datetime === null) {
           $currentContract[] = $cont;
         }
       }
     }
-    return $currentContract;
+    return (array)$currentContract;
   }
 
   /**
@@ -189,11 +217,11 @@ class SearchController extends AbstractController
    * 
    * @return int|float Nombre moyen d'heures de retard 
    */
-  private function calculateLatenessPerCustomer(Request $request): int|float
+  private function calculateLatenessPerCustomer(bool $showLateAverage): int|float
   {
     $latenessPerCustomer = 0;
     $AllCustomerNumber =  count($this->mongoDBService->getDatabase('Customer')->customers->find()->toArray());
-    if ($request->request->get('lateAverage') == 'show') {
+    if ($showLateAverage) {
       foreach ($this->contractRepository->findAll() as $cont) {
         if ($cont->locend_datetime < $cont->returning_datetime) {
           ++$latenessPerCustomer;
@@ -207,20 +235,18 @@ class SearchController extends AbstractController
   /**
    * Calcul le nombre de retard entre deux dates
    * 
-   * @param input Dates choisies par l'utilisateur
+   * @param int Dates choisies par l'utilisateur
    * @return int Heures de retard entre deux dates
    */
-  private function calculateLatenessBetweenDates(Request $request): int
+  private function calculateLatenessBetweenDates(?int $beginDateLate, ?int $endDateLate): int
   {
     $latenessBetweenDates = 0;
-    $userInputBeginDate = $request->request->get('beginDateLate');
-    $userInputEndDate = $request->request->get('endDateLate');
 
     foreach ($this->contractRepository->findAll() as $cont) {
       if (
         $cont->locend_datetime < $cont->returning_datetime
-        && strtotime($userInputBeginDate) < $cont->returning_datetime->getTimestamp()
-        && strtotime($userInputEndDate) > $cont->returning_datetime->getTimestamp()
+        && strtotime($beginDateLate) < $cont->returning_datetime->getTimestamp()
+        && strtotime($endDateLate) > $cont->returning_datetime->getTimestamp()
       ) {
         ++$latenessBetweenDates;
       }
@@ -233,19 +259,16 @@ class SearchController extends AbstractController
    * 
    * @return array Tableau contenant les heures de retard pour chaque véhicules
    */
-  private function calculateAverageLatenessPerVehicle(Request $request)
+  private function calculateAverageLatenessPerVehicle(bool $showTimeLateAverage)
   {
     $averageLatenessPerVehicle = [];
-    if ($request->request->get('timeLateAverage') == 'show') {
+    if ($showTimeLateAverage) {
       $vehicleLateness = [];
-      foreach ($this->contractRepository->findAll() as $cont) 
-      {
-        if ($cont->locend_datetime < $cont->returning_datetime) 
-        {
+      foreach ($this->contractRepository->findAll() as $cont) {
+        if ($cont->locend_datetime < $cont->returning_datetime) {
           $latenessTime = $cont->returning_datetime->getTimestamp() - $cont->locend_datetime->getTimestamp();
 
-          if (!isset($vehicleLateness[$cont->vehicle_uid])) 
-          {
+          if (!isset($vehicleLateness[$cont->vehicle_uid])) {
             $vehicleLateness[$cont->vehicle_uid] = [];
           }
           $vehicleLateness[$cont->vehicle_uid][] = $latenessTime;
@@ -259,64 +282,58 @@ class SearchController extends AbstractController
         $averageLatenessPerVehicle[$vehicleUid] = $days . ' jours et ' . $hours . ' heures';
       }
     }
-    return $averageLatenessPerVehicle;
+    return (array)$averageLatenessPerVehicle;
   }
 
   /**
    * Recherche d'un client à partir de son nom et prénom
    * 
-   * @param input Les nom et prénom du client entrés par l'utilisateur
+   * @param string Les nom et prénom du client entrés par l'utilisateur
    * @return array|null Tableau contenant le client
    */
-  private function searchCustomerByName(Request $request): array|null
+  private function searchCustomerByName(?string $firstName, ?string $lastName): array|null
   {
     $customerByNames = null;
-      $firstNameInput = $request->request->get('FirstName_input');
-      $lastNameInput = $request->request->get('LastName_input');
-      $customerFoundByFirstName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['first_name' => $firstNameInput]);
-      $customerFoundByLastName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['second_name' => $lastNameInput]);
-      if ($customerFoundByFirstName == $customerFoundByLastName && $customerFoundByFirstName !== null) {
-        $customerByNames = [$customerFoundByFirstName];
-      }
-    return $customerByNames;
+    $customerFoundByFirstName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['first_name' => $firstName]);
+    $customerFoundByLastName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['second_name' => $lastName]);
+    if ($customerFoundByFirstName == $customerFoundByLastName && $customerFoundByFirstName !== null) {
+      $customerByNames = [$customerFoundByFirstName];
+    }
+    return (array)$customerByNames;
   }
 
   /**
    * Recherche d'un véhicule à partir de son immatriculation
    * 
-   * @param input l'immatriculation du véhicule entré par l'utilisateur
+   * @param string l'immatriculation du véhicule entré par l'utilisateur
    * @return array|null Tableau contenant le véhicule | ou null si pas d'entrée
    */
-  private function searchVehicleByPlate(Request $request): array|null
+  private function searchVehicleByPlate(?string $licencePlate): array|null
   {
     $vehicleByPlate = null;
-      $userInput = $request->request->get('immat_input');
-      $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['licence_plate' => $userInput]);
-      if ($vehicle) {
-        $vehicleByPlate = [$vehicle];
-      }
-    return $vehicleByPlate;
+
+    $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['licence_plate' => $licencePlate]);
+    if ($vehicle) {
+      $vehicleByPlate = [$vehicle];
+    }
+    return (array)$vehicleByPlate;
   }
 
   /**
    * Recherche des véhicules supérieur à un kilométrage donné
    * 
-   * @param input Kilométrage entré par l'utilisateur
+   * @param string Kilométrage entré par l'utilisateur
    * @return array Tableau contenant les véhicule ayant un kilométrage supérieur à celui rentré par l'utilisateur
    */
-  private function searchVehicleByKm(Request $request): array
+  private function searchVehicleByKm(?string $kmInput): array
   {
     $vehicleByKm = [];
-    if ($request->isMethod('POST')) {
-      $userInput = null;
-      $userInput = $request->request->get('km_input');
-      $vehicles = $this->mongoDBService->getDatabase('Vehicle')->vehicles->find()->toArray();
-      foreach ($vehicles as $car) {
-        if ($userInput && $car->km > $userInput) {
-          $vehicleByKm[] = $car;
-        }
+    $vehicles = $this->mongoDBService->getDatabase('Vehicle')->vehicles->find()->toArray();
+    foreach ($vehicles as $car) {
+      if ($kmInput && $car->km > $kmInput) {
+        $vehicleByKm[] = $car;
       }
     }
-    return $vehicleByKm;
+    return (array)$vehicleByKm;
   }
 }

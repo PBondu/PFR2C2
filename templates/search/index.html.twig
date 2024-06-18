@@ -203,12 +203,13 @@
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
             <label for="contract_id">Search for a contract</label>
-            <input type="text" id="contract_id" name="contract_id" class="form-control" required>
+            <input type="text" id="contract_id" name="contract_id" class="form-control" pattern="[0-9]{0,10}" title="Veuillez entrer un ID valide"  required>
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    {% if contractByContractId %}
+{% if contractByContractId is not null %}
+    {% if contractByContractId is not empty %}
         <h3>Contract by contract's ID</h3>
         <table class="table">
             <thead>
@@ -238,7 +239,12 @@
                 {% endfor %}
             </tbody>
         </table>
+    {% else %}
+        <p>No contract found for ID {{ app.request.get('contract_id') }}</p>
     {% endif %}
+{% endif %}
+
+
 
     <br/>
 
@@ -246,12 +252,13 @@
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
             <label for="billing_id">Search for bills of a contract</label>
-            <input type="text" id="billing_id" name="billing_id" class="form-control" required>
+            <input type="text" id="billing_id" name="billing_id" class="form-control" pattern="[0-9]{0,10}" title="Veuillez entrer un ID valide" required>
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    {% if billingByContractId %}
+{% if billingByContractId is not null %}
+    {% if billingByContractId is not empty %}
         <h3>Bills by contract's ID</h3>
         <table class="table">
             <thead>
@@ -272,7 +279,10 @@
                 {% endfor %}
             </tbody>
         </table>
+    {% else %}
+        <p>No bill found for ID {{ app.request.get('billing_id') }}</p>
     {% endif %}
+{% endif %}
 
     <br/>
 
