@@ -34,7 +34,7 @@ class SearchController extends AbstractController
   #[Route('/', name: 'app_search_index', methods: ['GET', 'POST'])]
   public function index(Request $request): Response
   {
-    dump($this->searchBillingByContractId(3));
+    dump($this->searchUnpayedContracts(true));
     $billingId = $this->UserRequestProvider->getBillingId($request);
     $contractId = $this->UserRequestProvider->getContractId($request);
     $customerId = $this->UserRequestProvider->getCustomerId($request);
@@ -128,16 +128,17 @@ class SearchController extends AbstractController
    * @param int ID du client rentré par l'utilisateur
    * @return array|null Tableau contenant les contrats à afficher
    */
-  private function searchContractByCustomerId(?int $customerId): array|null
+  public function searchContractByCustomerId(?int $customerId): array|null
   {
-    $contractByCustomerId = null;
-
-    $customerFound = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['_id' => $customerId]);
-    if ($customerFound) {
-      $idCustomerFound = $customerFound['_id'];
-      $contractByCustomerId = $this->contractRepository->findBy(['customer_uid' => $idCustomerFound]);
+    if ($customerId !== null) {
+      $contractByCustomerId = $this->contractRepository->findBy(['customer_uid' => $customerId]);
+      if ($contractByCustomerId !== null) {
+        return (array)$contractByCustomerId;
+      } else {
+        return [];
+      }
     }
-    return (array)$contractByCustomerId;
+    return null;
   }
 
   /**
@@ -146,15 +147,17 @@ class SearchController extends AbstractController
    * @param int ID du véhicule rentré par l'utilisateur
    * @return array|null Tableau contenant les contrats à afficher
    */
-  private function searchContractByVehicleId(?int $vehicleId): array|null
+  public function searchContractByVehicleId(?int $vehicleId): array|null
   {
-    $contractByVehicleId = null;
-    $vehicleFound = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['_id' => $vehicleId]);
-    if ($vehicleFound) {
-      $idVehicleFound = $vehicleFound['_id'];
-      $contractByVehicleId = $this->contractRepository->findBy(['vehicle_uid' => $idVehicleFound]);
+    if ($vehicleId !== null) {
+      $contractByVehicleId = $this->contractRepository->findBy(['vehicle_uid' => $vehicleId]);
+      if ($contractByVehicleId !== null) {
+        return (array)$contractByVehicleId;
+      } else {
+        return [];
+      }
     }
-    return (array)$contractByVehicleId;
+    return null;
   }
 
   /**
@@ -162,14 +165,14 @@ class SearchController extends AbstractController
    * 
    * @return array Tableau contenant les contrats à afficher
    */
-  private function searchUnpayedContracts(bool $showUnpayed)
+  public function searchUnpayedContracts(bool $showUnpayed)
   {
     $unpayedContracts = [];
     if ($showUnpayed) {
-      foreach ($this->contractRepository->findAll() as $cont) {
-        $billingFoundByContractId = $this->billingRepository->findBy(['Contract_id' => $cont]);
+      foreach ($this->contractRepository->findAll() as $contract) {
+        $billingFoundByContractId = $this->billingRepository->findBy(['Contract_id' => $contract]);
         if (empty($billingFoundByContractId)) {
-          $unpayedContracts[] = $cont;
+          $unpayedContracts[] = $contract;
         }
       }
     }
@@ -185,9 +188,9 @@ class SearchController extends AbstractController
   {
     $lateContracts = [];
     if ($showLate) {
-      foreach ($this->contractRepository->findAll() as $cont) {
-        if ($cont->locend_datetime < $cont->returning_datetime) {
-          $lateContracts[] = $cont;
+      foreach ($this->contractRepository->findAll() as $contract) {
+        if ($contract->locend_datetime < $contract->returning_datetime) {
+          $lateContracts[] = $contract;
         }
       }
     }
@@ -203,9 +206,9 @@ class SearchController extends AbstractController
   {
     $currentContract = [];
     if ($showCurrent) {
-      foreach ($this->contractRepository->findAll() as $cont) {
-        if ($cont->returning_datetime === null) {
-          $currentContract[] = $cont;
+      foreach ($this->contractRepository->findAll() as $contract) {
+        if ($contract->returning_datetime === null) {
+          $currentContract[] = $contract;
         }
       }
     }

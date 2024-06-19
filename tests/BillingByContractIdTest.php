@@ -24,7 +24,7 @@ class BillingByContractId extends TestCase
         $this->userRequestProvider = $this->createMock(UserRequestProvider::class);
     }
 
-    public function testContractFoundById(): void
+    public function testBillingFoundByContractId(): void
     {
         $searchClass = new SearchController(
             $this->mongoDBService,
@@ -41,13 +41,13 @@ class BillingByContractId extends TestCase
             ->with(['Contract_id' => $billingId])
             ->willReturn($billFound);
 
-        $result = $searchClass->searchBillingByContractId($billingId);
+        $functionResult = $searchClass->searchBillingByContractId($billingId);
 
-        $this->assertNotEmpty($result, 'Le tableau est vide.');
-        $this->assertSame($billFound, $result, 'Le contrat renvoyé par la fonction n\'est pas correct');
+        $this->assertNotEmpty($functionResult, 'Le tableau est vide.');
+        $this->assertSame($billFound, $functionResult, 'Le contrat renvoyé par la fonction n\'est pas correct');
     }
 
-    public function testContractNotFoundById(): void
+    public function testBillingNotFoundByContractId(): void
     {
         $searchClass = new SearchController(
             $this->mongoDBService,
@@ -63,9 +63,9 @@ class BillingByContractId extends TestCase
             ->with(['Contract_id' => $billingId])
             ->willReturn($billingNotFound);
 
-        $result = $searchClass->searchBillingByContractId($billingId);
+        $functionResult = $searchClass->searchBillingByContractId($billingId);
 
-        $this->assertEmpty($result, 'Le tableau n\'est pas vide.');
-        $this->assertSame($billingNotFound, $result, 'Le contrat renvoyé par la fonction n\'est pas correct');
+        $this->assertEmpty($functionResult, 'Le tableau n\'est pas vide.');
+        $this->assertSame($billingNotFound, $functionResult, 'Le contrat renvoyé par la fonction n\'est pas correct');
     }
 }
