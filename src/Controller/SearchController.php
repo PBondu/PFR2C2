@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 #[Route('/search')]
 class SearchController extends AbstractController
@@ -34,7 +35,6 @@ class SearchController extends AbstractController
   #[Route('/', name: 'app_search_index', methods: ['GET', 'POST'])]
   public function index(Request $request): Response
   {
-    dump($this->searchUnpayedContracts(true));
     $billingId = $this->UserRequestProvider->getBillingId($request);
     $contractId = $this->UserRequestProvider->getContractId($request);
     $customerId = $this->UserRequestProvider->getCustomerId($request);
@@ -88,9 +88,9 @@ class SearchController extends AbstractController
    * Recherche une ou plusieurs factures à partir d'un ID contrat
    * 
    * @param int ID du contrat rentré par l'utilisateur
-   * @return array Tableau des objets billing à afficher
+   * @return array|[]|null Tableau des objets billing à afficher
    */
-  public function searchBillingByContractId(?int $billingId)
+  public function searchBillingByContractId(?int $billingId): ?array
   {
     if ($billingId !== null) {
       $billingByContractId = $this->billingRepository->findBy(['Contract_id' => $billingId]);
@@ -107,9 +107,9 @@ class SearchController extends AbstractController
    * Recherche un contrat à partir de son ID
    * 
    * @param int ID du contrat rentré par l'utilisateur
-   * @return array Tableau contenant le contrat à afficher
+   * @return array|[]|null Tableau contenant le contrat à afficher
    */
-  public function searchContractByContractId(?int $contractId)
+  public function searchContractByContractId(?int $contractId): ?array
   {
     if ($contractId !== null) {
       $contractByContractId = $this->contractRepository->findBy(['id' => $contractId]);
@@ -126,9 +126,9 @@ class SearchController extends AbstractController
    * Recherche un ou plusieurs contrats à partir de l'ID du client
    * 
    * @param int ID du client rentré par l'utilisateur
-   * @return array|null Tableau contenant les contrats à afficher
+   * @return array|[]|null Tableau contenant les contrats à afficher
    */
-  public function searchContractByCustomerId(?int $customerId): array|null
+  public function searchContractByCustomerId(?int $customerId): ?array
   {
     if ($customerId !== null) {
       $contractByCustomerId = $this->contractRepository->findBy(['customer_uid' => $customerId]);
@@ -145,9 +145,9 @@ class SearchController extends AbstractController
    * Recherche un ou plusieurs contrats à partir de l'ID d'un véhicule
    * 
    * @param int ID du véhicule rentré par l'utilisateur
-   * @return array|null Tableau contenant les contrats à afficher
+   * @return array|[]|null Tableau contenant les contrats à afficher
    */
-  public function searchContractByVehicleId(?int $vehicleId): array|null
+  public function searchContractByVehicleId(?int $vehicleId): ?array
   {
     if ($vehicleId !== null) {
       $contractByVehicleId = $this->contractRepository->findBy(['vehicle_uid' => $vehicleId]);
@@ -163,9 +163,10 @@ class SearchController extends AbstractController
   /**
    * Recherche les contrats impayés | les contrats sans factures associées
    * 
-   * @return array Tableau contenant les contrats à afficher
+   * @param bool Bouton "show" cliqué par l'utilisateur renvoitTRUE
+   * @return array|[] Tableau contenant les contrats à afficher
    */
-  public function searchUnpayedContracts(bool $showUnpayed)
+  public function searchUnpayedContracts(bool $showUnpayed): ?array
   {
     $unpayedContracts = [];
     if ($showUnpayed) {
@@ -175,16 +176,20 @@ class SearchController extends AbstractController
           $unpayedContracts[] = $contract;
         }
       }
+      return !empty($unpayedContracts) ? (array)$unpayedContracts : [];
     }
-    return (array)$unpayedContracts;
+    else{
+      return null;
+    }
   }
 
   /**
    * Recherche les contrats en retards
    * 
-   * @return array Tableau contenant les contrats à afficher
+   * @param bool Bouton "show" cliqué par l'utilisateur renvoitTRUE
+   * @return array|[] Tableau contenant les contrats à afficher
    */
-  private function searchLateContracts(bool $showLate)
+  public function searchLateContracts(bool $showLate): ?array
   {
     $lateContracts = [];
     if ($showLate) {
@@ -192,17 +197,21 @@ class SearchController extends AbstractController
         if ($contract->locend_datetime < $contract->returning_datetime) {
           $lateContracts[] = $contract;
         }
-      }
+      }      
+      return !empty($lateContracts) ? (array)$lateContracts : [];
     }
-    return (array)$lateContracts;
+    else{
+      return null;
+    }
   }
 
   /**
    * Recherche les contrats en cours
    * 
-   * @return array Tableau contenant les contrats à afficher
+   * @param bool Bouton "show" cliqué par l'utilisateur renvoitTRUE
+   * @return array|[]|null Tableau contenant les contrats à afficher
    */
-  private function searchCurrentContracts(bool $showCurrent)
+  public function searchCurrentContracts(bool $showCurrent): ?array
   {
     $currentContract = [];
     if ($showCurrent) {
@@ -211,16 +220,20 @@ class SearchController extends AbstractController
           $currentContract[] = $contract;
         }
       }
+      return !empty($currentContract) ? (array)$currentContract : [];
     }
-    return (array)$currentContract;
+    else{
+      return null;
+    }
   }
 
   /**
    * Calcul le nombre moyen d'heures de retard par client
    * 
+   * @param bool Bouton "show" cliqué par l'utilisateur renvoitTRUE
    * @return int|float Nombre moyen d'heures de retard 
    */
-  private function calculateLatenessPerCustomer(bool $showLateAverage): int|float
+  public function calculateLatenessPerCustomer(bool $showLateAverage): int|float
   {
     $latenessPerCustomer = 0;
     $AllCustomerNumber =  count($this->mongoDBService->getDatabase('Customer')->customers->find()->toArray());
@@ -238,10 +251,10 @@ class SearchController extends AbstractController
   /**
    * Calcul le nombre de retard entre deux dates
    * 
-   * @param int Dates choisies par l'utilisateur
+   * @param ?string Dates choisies par l'utilisateur
    * @return int Heures de retard entre deux dates
    */
-  private function calculateLatenessBetweenDates(?int $beginDateLate, ?int $endDateLate): int
+  public function calculateLatenessBetweenDates(?string $beginDateLate, ?string $endDateLate): int
   {
     $latenessBetweenDates = 0;
 
@@ -260,83 +273,87 @@ class SearchController extends AbstractController
   /**
    * Calcul du nombre d'heures de retard moyen pour chaque véhicules
    * 
-   * @return array Tableau contenant les heures de retard pour chaque véhicules
+   * @param bool Bouton "show" cliqué par l'utilisateur renvoitTRUE
+   * @return array|null Tableau contenant les heures de retard pour chaque véhicules
    */
-  private function calculateAverageLatenessPerVehicle(bool $showTimeLateAverage)
-  {
+public function calculateAverageLatenessPerVehicle(bool $showTimeLateAverage): ?array
+{
     $averageLatenessPerVehicle = [];
     if ($showTimeLateAverage) {
-      $vehicleLateness = [];
-      foreach ($this->contractRepository->findAll() as $cont) {
-        if ($cont->locend_datetime < $cont->returning_datetime) {
-          $latenessTime = $cont->returning_datetime->getTimestamp() - $cont->locend_datetime->getTimestamp();
-
-          if (!isset($vehicleLateness[$cont->vehicle_uid])) {
-            $vehicleLateness[$cont->vehicle_uid] = [];
-          }
-          $vehicleLateness[$cont->vehicle_uid][] = $latenessTime;
+        $vehicleLateness = [];
+        foreach ($this->contractRepository->findAll() as $cont) {
+            if ($cont->locend_datetime < $cont->returning_datetime) {
+                $latenessTime = $cont->returning_datetime->getTimestamp() - $cont->locend_datetime->getTimestamp();
+                $vehicleLateness[$cont->vehicle_uid][] = $latenessTime;
+            }
         }
-      }
-      foreach ($vehicleLateness as $vehicleUid => $latenessTimes) {
-        $totalLateness = array_sum($latenessTimes);
-        $averageLateness = $totalLateness / count($latenessTimes);
-        $days = floor($averageLateness / (60 * 60 * 24));
-        $hours = floor(($averageLateness % (60 * 60 * 24)) / (60 * 60));
-        $averageLatenessPerVehicle[$vehicleUid] = $days . ' jours et ' . $hours . ' heures';
-      }
+        foreach ($vehicleLateness as $vehicleUid => $latenessTimes) {
+            $averageLateness = array_sum($latenessTimes) / count($latenessTimes);
+            $days = floor($averageLateness / (60 * 60 * 24));
+            $hours = floor(($averageLateness % (60 * 60 * 24)) / (60 * 60));
+            $averageLatenessPerVehicle[$vehicleUid] = $days . ' jours et ' . $hours . ' heures';
+        }
     }
     return (array)$averageLatenessPerVehicle;
-  }
+}
 
   /**
    * Recherche d'un client à partir de son nom et prénom
    * 
-   * @param string Les nom et prénom du client entrés par l'utilisateur
+   * @param string|null Les nom et prénom du client entrés par l'utilisateur
    * @return array|null Tableau contenant le client
    */
-  private function searchCustomerByName(?string $firstName, ?string $lastName): array|null
+  public function searchCustomerByName(?string $firstName, ?string $lastName): ?array
   {
-    $customerByNames = null;
-    $customerFoundByFirstName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['first_name' => $firstName]);
-    $customerFoundByLastName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['second_name' => $lastName]);
-    if ($customerFoundByFirstName == $customerFoundByLastName && $customerFoundByFirstName !== null) {
-      $customerByNames = [$customerFoundByFirstName];
+    if ($firstName !== null && $lastName !== null) {
+      $customerByNames = null;
+      $customerFoundByFirstName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['first_name' => $firstName]);
+      $customerFoundByLastName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['second_name' => $lastName]);
+      if ($customerFoundByFirstName == $customerFoundByLastName && $customerFoundByFirstName !== null) {
+        $customerByNames = [$customerFoundByFirstName];
+      }
+      return (array)$customerByNames;
     }
-    return (array)$customerByNames;
+    return null;
   }
 
   /**
    * Recherche d'un véhicule à partir de son immatriculation
    * 
-   * @param string l'immatriculation du véhicule entré par l'utilisateur
+   * @param string|null l'immatriculation du véhicule entré par l'utilisateur
    * @return array|null Tableau contenant le véhicule | ou null si pas d'entrée
    */
-  private function searchVehicleByPlate(?string $licencePlate): array|null
+  public function searchVehicleByPlate(?string $licencePlate): ?array
   {
-    $vehicleByPlate = null;
-
-    $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['licence_plate' => $licencePlate]);
-    if ($vehicle) {
-      $vehicleByPlate = [$vehicle];
+    if ($licencePlate !== null) {
+      $vehicleByPlate = null;
+      $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['licence_plate' => $licencePlate]);
+      if ($vehicle) {
+        $vehicleByPlate = [$vehicle];
+      }
+      return (array)$vehicleByPlate;
     }
-    return (array)$vehicleByPlate;
+    return null;
   }
 
   /**
    * Recherche des véhicules supérieur à un kilométrage donné
    * 
-   * @param string Kilométrage entré par l'utilisateur
-   * @return array Tableau contenant les véhicule ayant un kilométrage supérieur à celui rentré par l'utilisateur
+   * @param string|null Kilométrage entré par l'utilisateur
+   * @return array|null Tableau contenant les véhicule ayant un kilométrage supérieur à celui rentré par l'utilisateur
    */
-  private function searchVehicleByKm(?string $kmInput): array
+  public function searchVehicleByKm(?string $kmInput): ?array
   {
-    $vehicleByKm = [];
-    $vehicles = $this->mongoDBService->getDatabase('Vehicle')->vehicles->find()->toArray();
-    foreach ($vehicles as $car) {
-      if ($kmInput && $car->km > $kmInput) {
-        $vehicleByKm[] = $car;
+    if ($kmInput !== null) {
+      $vehicleByKm = [];
+      $vehicles = $this->mongoDBService->getDatabase('Vehicle')->vehicles->find()->toArray();
+      foreach ($vehicles as $car) {
+        if ($kmInput && $car->km > $kmInput) {
+          $vehicleByKm[] = $car;
+        }
       }
+      return (array)$vehicleByKm;
     }
-    return (array)$vehicleByKm;
+    return null;
   }
 }

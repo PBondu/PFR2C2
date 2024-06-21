@@ -1,31 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contract index{% endblock %}
+{% block title %}Recherche données{% endblock %}
 
 {% block body %}
-    <h1>Search index</h1>
+    <h1>Recherche dans la base données</h1>
     <br/>
 
-    <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
+    <a href="{{ path('dashboard_index') }}">Retour Menu Principal</a>
     <br/>
 
     <form method="post" action="{{ path('app_search_index') }}" >
-        <button type="submit">Reset</button>
+        <button type="submit">Reinitialiser</button>
     </form>
 
     <br/>    
     <br/>
 
-    <h2>Search current contracts :</h2>
+    <h2>Contrats en cours</h2>
     <form method="post" action="{{ path('app_search_index') }}" >
         <input type="hidden" name="current" value="show">
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
     <br/>
 
-{% if currentContract %}
-        <h3>current contracts</h3>
+{% if currentContract is not null %}
+    {% if currentContract is not empty %}
+        <h3>Contrats :</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -54,21 +55,26 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <p>Pas de contrats trouvés</p>
     {% endif %}
+  {% endif %}
+    
 
     <br/>
 
 
-    <h2>Search Late contracts :</h2>
+    <h2>Contrats en retard</h2>
     <form method="post" action="{{ path('app_search_index') }}" >
         <input type="hidden" name="late" value="show">
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
     <br/>
 
-{% if lateContracts %}
-        <h3>Late contracts</h3>
+{% if lateContracts is not null %}
+    {% if lateContracts is not empty %}
+        <h3>Contrats :</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -97,14 +103,17 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <p>Pas de contrats trouvés</p>
     {% endif %}
+  {% endif %}
 
     <br/>
 
     <h2>Retards moyens :</h2>
     <form method="post" action="{{ path('app_search_index') }}" >
         <input type="hidden" name="lateAverage" value="show">
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
     {% if latenessPerCustomer %}
@@ -118,7 +127,7 @@
     <form method="post" action="{{ path('app_search_index') }}" >
         <input type="date" name="beginDateLate">
         <input type="date" name="endDateLate">
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
     {% if latenessBetweenDates %}
@@ -131,11 +140,12 @@
     <h2>Temps de retards moyen par véhicules :</h2>
     <form method="post" action="{{ path('app_search_index') }}" >
         <input type="hidden" name="timeLateAverage" value="show">
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
+
+    {% if indicesOfAverageLateness %}    
     <h3>Retards moyens :</h3>
-    {% if indicesOfAverageLateness %}
       <table class="table">
         <thead>
           <tr>
@@ -156,17 +166,17 @@
 
     <br/>
 
-    <h2>Search Unpayed contracts :</h2>
+    <h2>Contrats impayés</h2>
     <form method="post" action="{{ path('app_search_index') }}" >
         <input type="hidden" name="unpayed" value="show">
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
     
-
     <br/>
 
-{% if unpayedContracts %}
-        <h3>Unpayed contracts</h3>
+{% if unpayedContracts is not null %}
+    {% if unpayedContracts is not empty %}
+        <h3>Contrats :</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -195,17 +205,21 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <p>Pas de contrats trouvés</p>
     {% endif %}
+  {% endif %}
+
 
     <br/>
 
-    <h2>Search Contract by contract's ID</h2>
+    <h2>Contrat par son ID</h2>
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
-            <label for="contract_id">Search for a contract</label>
-            <input type="text" id="contract_id" name="contract_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide"  required>
+            <label for="contract_id">Rechercher un contrat à partir de son propre ID</label>
+            <input type="text" id="contract_id" name="contract_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquements"  required>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
 {% if contractByContractId is not null %}
@@ -240,7 +254,7 @@
             </tbody>
         </table>
     {% else %}
-        <p>No contract found for ID {{ app.request.get('contract_id') }}</p>
+        <p>Aucun contrats trouvés pour l'ID {{ app.request.get('contract_id') }}</p>
     {% endif %}
 {% endif %}
 
@@ -248,13 +262,13 @@
 
     <br/>
 
-    <h2>Search bills by contract's ID</h2>
+    <h2>Facture par ID de contrat</h2>
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
-            <label for="billing_id">Search for bills of a contract</label>
-            <input type="text" id="billing_id" name="billing_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide" required>
+            <label for="billing_id">Rechercher une facture à partir de l'ID d'un contrat</label>
+            <input type="text" id="billing_id" name="billing_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquements" required>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
 {% if billingByContractId is not null %}
@@ -280,25 +294,24 @@
             </tbody>
         </table>
     {% else %}
-        <p>No bill found for ID {{ app.request.get('billing_id') }}</p>
+        <p>Pas de facture pour l'ID {{ app.request.get('billing_id') }}</p>
     {% endif %}
 {% endif %}
 
     <br/>
 
-    <h2>Search Contract by customer's ID</h2>
-
+    <h2>Contrat par ID client</h2>
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
-            <label for="customer_id">Search for contracts of a customer</label>
-            <input type="text" id="customer_id" name="customer_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide" required>
+            <label for="customer_id">Rechercher un contrat à partir de l'ID d'un client</label>
+            <input type="text" id="customer_id" name="customer_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquements" required>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
   {% if contractByCustomerId is not null %}
     {% if contractByCustomerId is not empty %}
-        <h3>Contract by customer's ID</h3>
+        <h3>Contracts :</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -329,25 +342,25 @@
             </tbody>
         </table>
     {% else %}
-        <p>No contract found for ID {{ app.request.get('customer_id') }}</p>
+        <p>Aucun contrats trouvés pour l'ID {{ app.request.get('customer_id') }}</p>
     {% endif %}
 {% endif %}
 
     <br/>
 
-    <h2>Search Contract by vehicle's ID</h2>
+    <h2>Contrat par ID véhicule</h2>
 
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
-            <label for="vehicle_id">Search for contracts of a vehicle</label>
-            <input type="text" id="vehicle_id" name="vehicle_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide" required>
+            <label for="vehicle_id">Rechercher un contrat à partir de l'ID d'un vehicule</label>
+            <input type="text" id="vehicle_id" name="vehicle_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquements" required>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
   {% if contractByVehicleId is not null %}
     {% if contractByVehicleId is not empty %}
-        <h3>Contract by vehicle's ID</h3>
+        <h3>Contrats :</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -378,23 +391,24 @@
             </tbody>
         </table>
        {% else %}
-        <p>No contract found for ID {{ app.request.get('vehicle_id') }}</p>
+        <p>Aucun contrats trouvés pour l'ID {{ app.request.get('vehicle_id') }}</p>
     {% endif %}
 {% endif %}
 
     <br/>
 
-    <h2>Customer by names</h2>
+    <h2>Client par nom et prénom</h2>
     <form method="post" action="{{ path('app_search_index') }}">
       <div class="form-group">
+      <label for="km_input">Rechercher un client à partir de son nom et de son prénom</label>
       <input style ="margin:7px 0px" type="text" id ="FirstName_input" name="FirstName_input" class="form-control" placeholder="Prénom" required>
       <input type="text" id ="LastName_input" name="LastName_input" class="form-control" placeholder="Nom" required>
       </div>
-      <button type="submit" class="btn btn-primary">Search</button>
+      <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
-
-      {% if customerByNames %}
-        <h3>Customer found by name</h3>
+    {% if customerByNames is not null %}
+      {% if customerByNames is not empty %}
+        <h3>Client trouvé :</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -417,19 +431,24 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <p>Aucun client trouvé</p>
     {% endif %}
+  {% endif %}
 
     <br/>
 
-    <h2>Véhicule par immatriculation</h2>
+    <h2>Véhicules par immatriculation</h2>
     <form method="post" action="{{ path('app_search_index') }}">
       <div class="form-group">
-      <input type="text" id ="immat_input" name="immat_input" class="form-control" placeholder="Immatriculation" required>
+      <label for="km_input">Rechercher un véhicule à partir de son immatriculation</label>
+      <input type="text" id ="immat_input" name="immat_input" class="form-control" pattern="[A-Za-z]{3}-[0-9]{3}-[A-Za-z]{3}" title="Veuillez entrer un kilométrage valide : abc-123-def" placeholder="Immatriculation" required>
       </div>
-      <button type="submit" class="btn btn-primary">Search</button>
+      <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
-      {% if vehicleByPlate %}
+    {% if vehicleByPlate is not null %}
+      {% if vehicleByPlate is not empty %}
         <h3>Vehicule :</h3>
         <table class="table">
         <thead>
@@ -452,20 +471,26 @@
 
     </tbody>
     </table>
+        {% else %}
+        <p>Aucun véhicule trouvé</p>
     {% endif %}
+  {% endif %}
+
 
     <br/>
 
-    <h2>Véhicule par Kilométrage</h2>
+    <h2>Véhicules par kilométrage</h2>
     <form method="post" action="{{ path('app_search_index') }}">
       <div class="form-group">
-      <input type="text" id ="km_input" name="km_input" class="form-control" placeholder="Km" required>
+      <label for="km_input">Rechercher un véhicule ayant un kilométrage supérieur à celui entré</label>
+      <input type="text" id ="km_input" name="km_input" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un kilométrage valide : Chiffres uniquements" placeholder="Km" required>
       </div>
-      <button type="submit" class="btn btn-primary">Search</button>
+      <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
-      {% if vehicleByKm %}
-        <h3>Vehicules :</h3>
+      {% if vehicleByKm is not null %}
+      {% if vehicleByKm is not empty  %}
+        <h3>Vehicules ayant un kilométrage supérieur à {{ app.request.get('km_input') }}:</h3>
         <table class="table">
         <thead>
             <tr>
@@ -487,10 +512,13 @@
 
         </tbody>
         </table>
-      {% endif %}
+        {% else %}
+        <p>Aucun véhicules trouvés</p>
+    {% endif %}
+  {% endif %}
 
     <br/>
 
-    <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
+    <a href="{{ path('dashboard_index') }}">Retour Menu Principal</a>
 
 {% endblock %}
