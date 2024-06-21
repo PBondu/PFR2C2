@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 #[Route('/search')]
 class SearchController extends AbstractController
@@ -35,6 +34,7 @@ class SearchController extends AbstractController
   #[Route('/', name: 'app_search_index', methods: ['GET', 'POST'])]
   public function index(Request $request): Response
   {
+    // Déclaration des variables stockant les inputs utilisateur
     $billingId = $this->UserRequestProvider->getBillingId($request);
     $contractId = $this->UserRequestProvider->getContractId($request);
     $customerId = $this->UserRequestProvider->getCustomerId($request);
@@ -51,6 +51,7 @@ class SearchController extends AbstractController
     $licencePlate = $this->UserRequestProvider->getLicencePlate($request);
     $kmInput = $this->UserRequestProvider->getKmInput($request);
 
+    // Lancement des fonctions avec l'input utilisateur en paramètre
     $billingByContractId = $this->searchBillingByContractId($billingId);
     $contractByContractId = $this->searchContractByContractId($contractId);
     $contractByCustomerId = $this->searchContractByCustomerId($customerId);
@@ -66,6 +67,7 @@ class SearchController extends AbstractController
     $vehicleByPlate = $this->searchVehicleByPlate($licencePlate);
     $vehicleByKm = $this->searchVehicleByKm($kmInput);
 
+    // Valeurs retournées dans le template twig
     return $this->render('search/index.html.twig', [
       'billingByContractId' => $billingByContractId,
       'contractByContractId' => $contractByContractId,
@@ -93,14 +95,14 @@ class SearchController extends AbstractController
   public function searchBillingByContractId(?int $billingId): ?array
   {
     if ($billingId !== null) {
-      $billingByContractId = $this->billingRepository->findBy(['Contract_id' => $billingId]);
-      if ($billingByContractId !== null) {
-        return (array)$billingByContractId;
+      $billingByContractId = $this->billingRepository->findBy(['Contract_id' => $billingId]); // Cherche une facture à partir de l'input user
+      if ($billingByContractId !== null) { // Si trouvé
+        return (array)$billingByContractId; // Retourne la facture trouvée
       } else {
-        return [];
+        return []; // Permet d'afficher pas de factures trouvées dans le twig
       }
     }
-    return null;
+    return null; // Permet d'afficher pas de factures trouvées dans le twig
   }
 
   /**
@@ -112,7 +114,7 @@ class SearchController extends AbstractController
   public function searchContractByContractId(?int $contractId): ?array
   {
     if ($contractId !== null) {
-      $contractByContractId = $this->contractRepository->findBy(['id' => $contractId]);
+      $contractByContractId = $this->contractRepository->findBy(['id' => $contractId]); // Cherche un contrat à partir de l'input user
       if ($contractByContractId !== null) {
         return (array)$contractByContractId;
       } else {
@@ -131,7 +133,7 @@ class SearchController extends AbstractController
   public function searchContractByCustomerId(?int $customerId): ?array
   {
     if ($customerId !== null) {
-      $contractByCustomerId = $this->contractRepository->findBy(['customer_uid' => $customerId]);
+      $contractByCustomerId = $this->contractRepository->findBy(['customer_uid' => $customerId]); // Cherche un contrat à partir de l'input user
       if ($contractByCustomerId !== null) {
         return (array)$contractByCustomerId;
       } else {
@@ -150,7 +152,7 @@ class SearchController extends AbstractController
   public function searchContractByVehicleId(?int $vehicleId): ?array
   {
     if ($vehicleId !== null) {
-      $contractByVehicleId = $this->contractRepository->findBy(['vehicle_uid' => $vehicleId]);
+      $contractByVehicleId = $this->contractRepository->findBy(['vehicle_uid' => $vehicleId]); // Cherche un contrat à partir de l'input user
       if ($contractByVehicleId !== null) {
         return (array)$contractByVehicleId;
       } else {
@@ -170,10 +172,10 @@ class SearchController extends AbstractController
   {
     $unpayedContracts = [];
     if ($showUnpayed) {
-      foreach ($this->contractRepository->findAll() as $contract) {
-        $billingFoundByContractId = $this->billingRepository->findBy(['Contract_id' => $contract]);
-        if (empty($billingFoundByContractId)) {
-          $unpayedContracts[] = $contract;
+      foreach ($this->contractRepository->findAll() as $contract) { // Pour chaque contrat
+        $billingFoundByContractId = $this->billingRepository->findBy(['Contract_id' => $contract]); // Cherche une facture
+        if (empty($billingFoundByContractId)) { // Si contrat sans facture
+          $unpayedContracts[] = $contract;  // Ajout du contrat au tableau
         }
       }
       return !empty($unpayedContracts) ? (array)$unpayedContracts : [];
@@ -193,9 +195,9 @@ class SearchController extends AbstractController
   {
     $lateContracts = [];
     if ($showLate) {
-      foreach ($this->contractRepository->findAll() as $contract) {
-        if ($contract->locend_datetime < $contract->returning_datetime) {
-          $lateContracts[] = $contract;
+      foreach ($this->contractRepository->findAll() as $contract) { // Pour chaque contrat
+        if ($contract->locend_datetime < $contract->returning_datetime) { // Si le véhicule est retourné après la date de fin du contrat
+          $lateContracts[] = $contract; // Ajout du contrat au tableau
         }
       }      
       return !empty($lateContracts) ? (array)$lateContracts : [];
@@ -215,9 +217,9 @@ class SearchController extends AbstractController
   {
     $currentContract = [];
     if ($showCurrent) {
-      foreach ($this->contractRepository->findAll() as $contract) {
-        if ($contract->returning_datetime === null) {
-          $currentContract[] = $contract;
+      foreach ($this->contractRepository->findAll() as $contract) { // Pour chaque contrat
+        if ($contract->returning_datetime === null) { // Si le véhicule n'est pas encore retourné
+          $currentContract[] = $contract; // Ajout du contrat au tableau
         }
       }
       return !empty($currentContract) ? (array)$currentContract : [];
@@ -236,14 +238,15 @@ class SearchController extends AbstractController
   public function calculateLatenessPerCustomer(bool $showLateAverage): int|float
   {
     $latenessPerCustomer = 0;
+    // compte le nombre de clients dans la db
     $AllCustomerNumber =  count($this->mongoDBService->getDatabase('Customer')->customers->find()->toArray());
     if ($showLateAverage) {
-      foreach ($this->contractRepository->findAll() as $cont) {
-        if ($cont->locend_datetime < $cont->returning_datetime) {
-          ++$latenessPerCustomer;
+      foreach ($this->contractRepository->findAll() as $cont) { // Pour chaque contrat
+        if ($cont->locend_datetime < $cont->returning_datetime) { // Si le véhicule est retourné après la date de fin du contrat
+          ++$latenessPerCustomer; // Incrément du nombre de retard
         }
       }
-      $latenessPerCustomer = $latenessPerCustomer / $AllCustomerNumber;
+      $latenessPerCustomer = $latenessPerCustomer / $AllCustomerNumber; // Moyenne du nombre de retard par client
     }
     return $latenessPerCustomer;
   }
@@ -258,13 +261,14 @@ class SearchController extends AbstractController
   {
     $latenessBetweenDates = 0;
 
-    foreach ($this->contractRepository->findAll() as $cont) {
+    foreach ($this->contractRepository->findAll() as $cont) { // Pour chaque contrat
       if (
+        // Si les dates des retards sont comprises entre les dates entrées par le user
         $cont->locend_datetime < $cont->returning_datetime
         && strtotime($beginDateLate) < $cont->returning_datetime->getTimestamp()
         && strtotime($endDateLate) > $cont->returning_datetime->getTimestamp()
       ) {
-        ++$latenessBetweenDates;
+        ++$latenessBetweenDates; // Incrément du nombre de retard
       }
     }
     return $latenessBetweenDates;
@@ -278,20 +282,24 @@ class SearchController extends AbstractController
    */
 public function calculateAverageLatenessPerVehicle(bool $showTimeLateAverage): ?array
 {
-    $averageLatenessPerVehicle = [];
+    $averageLatenessPerVehicle = []; 
     if ($showTimeLateAverage) {
         $vehicleLateness = [];
-        foreach ($this->contractRepository->findAll() as $cont) {
-            if ($cont->locend_datetime < $cont->returning_datetime) {
-                $latenessTime = $cont->returning_datetime->getTimestamp() - $cont->locend_datetime->getTimestamp();
-                $vehicleLateness[$cont->vehicle_uid][] = $latenessTime;
+        foreach ($this->contractRepository->findAll() as $cont) { // Pour chaque contrat
+            if ($cont->locend_datetime < $cont->returning_datetime) { // Si le véhicule est retourné après la date de fin du contrat
+                // Calcul du temps de retard
+                $latenessTime = $cont->returning_datetime->getTimestamp() - $cont->locend_datetime->getTimestamp(); 
+                $vehicleLateness[$cont->vehicle_uid][] = $latenessTime; // Ajout du temps de retard par véhicule au tableau associatif
             }
         }
-        foreach ($vehicleLateness as $vehicleUid => $latenessTimes) {
-            $averageLateness = array_sum($latenessTimes) / count($latenessTimes);
-            $days = floor($averageLateness / (60 * 60 * 24));
-            $hours = floor(($averageLateness % (60 * 60 * 24)) / (60 * 60));
-            $averageLatenessPerVehicle[$vehicleUid] = $days . ' jours et ' . $hours . ' heures';
+        /*
+          Permet d'additionner les temps de retard pour les mêmes véhicules
+        */
+        foreach ($vehicleLateness as $vehicleUid => $latenessTimes) { // Pour chaque retard dans le précédent tableau
+            $averageLateness = array_sum($latenessTimes) / count($latenessTimes); // Additionne les temps de retards
+            $days = floor($averageLateness / (60 * 60 * 24));  // Permet la conversion en jours
+            $hours = floor(($averageLateness % (60 * 60 * 24)) / (60 * 60)); // Permet la conversion en heures
+            $averageLatenessPerVehicle[$vehicleUid] = $days . ' jours et ' . $hours . ' heures'; // Affichage sous forme de jours et d'heures
         }
     }
     return (array)$averageLatenessPerVehicle;
@@ -307,10 +315,11 @@ public function calculateAverageLatenessPerVehicle(bool $showTimeLateAverage): ?
   {
     if ($firstName !== null && $lastName !== null) {
       $customerByNames = null;
+      // Cherche nom et prénom dans la db en fonction de l'input user
       $customerFoundByFirstName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['first_name' => $firstName]);
       $customerFoundByLastName = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['second_name' => $lastName]);
-      if ($customerFoundByFirstName == $customerFoundByLastName && $customerFoundByFirstName !== null) {
-        $customerByNames = [$customerFoundByFirstName];
+      if ($customerFoundByFirstName == $customerFoundByLastName && $customerFoundByFirstName !== null) { // Si trouvé
+        $customerByNames = [$customerFoundByFirstName]; // Ajout au tableau
       }
       return (array)$customerByNames;
     }
@@ -327,9 +336,10 @@ public function calculateAverageLatenessPerVehicle(bool $showTimeLateAverage): ?
   {
     if ($licencePlate !== null) {
       $vehicleByPlate = null;
+      // Cherche un véhicule dans la db en fonction de l'input user
       $vehicle = $this->mongoDBService->getDatabase('Vehicle')->vehicles->findOne(['licence_plate' => $licencePlate]);
-      if ($vehicle) {
-        $vehicleByPlate = [$vehicle];
+      if ($vehicle) { // Si trouvé
+        $vehicleByPlate = [$vehicle]; // Ajout au tableau
       }
       return (array)$vehicleByPlate;
     }
@@ -346,10 +356,11 @@ public function calculateAverageLatenessPerVehicle(bool $showTimeLateAverage): ?
   {
     if ($kmInput !== null) {
       $vehicleByKm = [];
+       // Cherche tous les véhicules dans la db 
       $vehicles = $this->mongoDBService->getDatabase('Vehicle')->vehicles->find()->toArray();
-      foreach ($vehicles as $car) {
-        if ($kmInput && $car->km > $kmInput) {
-          $vehicleByKm[] = $car;
+      foreach ($vehicles as $car) { // Pour chaque véhicules
+        if ($kmInput && $car->km > $kmInput) { // Si le véhicule a un km supérieur à celui de l'input user
+          $vehicleByKm[] = $car; // Ajout au tableau
         }
       }
       return (array)$vehicleByKm;
