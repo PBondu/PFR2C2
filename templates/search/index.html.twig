@@ -401,8 +401,8 @@
     <form method="post" action="{{ path('app_search_index') }}">
       <div class="form-group">
       <label for="km_input">Rechercher un client à partir de son nom et de son prénom</label>
-      <input style ="margin:7px 0px" type="text" id ="FirstName_input" name="FirstName_input" class="form-control" placeholder="Prénom" required>
-      <input type="text" id ="LastName_input" name="LastName_input" class="form-control" placeholder="Nom" required>
+      <input style ="margin:7px 0px" type="text" id ="FirstName_input" name="FirstName_input" class="form-control" pattern="[A-Za-z]{0,50}" title="Veuillez entrer un prénom valide : Lettres sans accent uniquement" placeholder="Prénom" required>
+      <input type="text" id ="LastName_input" name="LastName_input" class="form-control" pattern="[A-Za-z]{0,50}" title="Veuillez entrer un prénom valide : Lettres sans accent uniquement" placeholder="Nom" required>
       </div>
       <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
