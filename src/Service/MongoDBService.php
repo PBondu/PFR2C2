@@ -4,6 +4,10 @@ namespace App\Service;
 
 use MongoDB\Client;
 
+/*
+  Service permettant de suppléer doctrine ODB
+*/
+
 class MongoDBService
 {
     private $client;

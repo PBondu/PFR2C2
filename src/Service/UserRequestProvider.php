@@ -4,6 +4,10 @@ namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Request;
 
+/*
+  Service récupérant les les inputs user et les renvoies pour les fonctions de recherche
+*/
+
 class UserRequestProvider
 {
     public function getBillingId(Request $request): ?int
