@@ -1,54 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Customers{% endblock %}
+{% block title %}Clients{% endblock %}
 
 {% block body %}
-    <h1>Customers</h1>
+    <h1>Liste des clients</h1>
 
-    <form method="post" action="{{ path('customer_index') }}">
-        <div class="form-group">
-            <label for="mongo_id">Search for contracts of a customer</label>
-            <input type="text" id="mongo_id" name="mongo_id" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-
-    {% if customerById %}
-        <h2>Customer contract</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>id</th>
-                    <th>vehicle_uid</th>
-                    <th>customer_uid</th>
-                    <th>sign_datetime</th>
-                    <th>locbegin_datetime</th>
-                    <th>locend_datetime</th>
-                    <th>returning_datetime</th>
-                    <th>price</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                {% for data in customerById %}
-                    <tr>
-                        <td>{{ data.id }}</td>
-                        <td>{{ data.vehicleUid }}</td>
-                        <td>{{ data.customerUid }}</td>
-                        <td>{{ data.signDatetime ? data.signDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ data.locbeginDatetime ? data.locbeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ data.locendDatetime ? data.locendDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ data.returningDatetime ? data.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ data.price }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-    {% if customerById != true %}
-      <h4>No contract found</h4>
-    {% endif %}
-    <h2>Customer List</h2>
     <table class="table">
         <thead>
             <tr>
@@ -68,13 +24,13 @@
                 <td>{{ customer.address }}</td>
                 <td>{{ customer.permit_number }}</td>
                 <td>
-                  <a href="{{ path('customer_show', {'id': customer._id}) }}">show</a>
-                  <a href="{{ path('customer_edit', {'id': customer._id}) }}">Edit</a>
+                  <a href="{{ path('customer_show', {'id': customer._id}) }}">Afficher</a>
+                  <a href="{{ path('customer_edit', {'id': customer._id}) }}">Edition</a>
                 </td>
             </tr>
         {% endfor %}
     </tbody>
     </table>
-    <a href="{{ path('customer_new') }}">Create new</a>
-    <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
+    <a href="{{ path('customer_new') }}">Nouveau client</a>
+    <a href="{{ path('dashboard_index') }}">Retour au menu</a>
 {% endblock %}

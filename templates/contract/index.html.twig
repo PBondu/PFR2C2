@@ -1,55 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contract index{% endblock %}
+{% block title %}Liste des contrats{% endblock %}
 
 {% block body %}
-    <h1>Contract index</h1>
-    <br/>
-    <h2>Search Contract by id</h2>
-    <form method="post" action="{{ path('app_contract_index') }}">
-        <div class="form-group">
-            <label for="contract_id">Search for a contract</label>
-            <input type="text" id="contract_id" name="contract_id" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+    <h1>Liste des contrats</h1>
 
-    {% if contractById %}
-        <h3>Contract by id</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Vehicle_uid</th>
-                    <th>Customer_uid</th>
-                    <th>Sign_datetime</th>
-                    <th>Locbegin_datetime</th>
-                    <th>Locend_datetime</th>
-                    <th>Returning_datetime</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for data in contractById %}
-                    <tr>
-                        <td>{{ data.id }}</td>
-                        <td>{{ data.vehicleUid }}</td>
-                        <td>{{ data.customerUid }}</td>
-                        <td>{{ data.signDatetime ? data.signDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ data.locbeginDatetime ? data.locbeginDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ data.locendDatetime ? data.locendDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ data.returningDatetime ? data.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ data.price }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-    {% if contractById != true %}
-      <h4>No contract found</h4>
-    {% endif %}
     <br/>
-    <h2>Customer List</h2>
+  
     <table class="table">
         <thead>
             <tr>
@@ -76,18 +33,18 @@
                 <td>{{ contract.returningDatetime ? contract.returningDatetime|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ contract.price }}</td>
                 <td>
-                    <a href="{{ path('app_contract_show', {'id': contract.id}) }}">show</a>
-                    <a href="{{ path('app_contract_edit', {'id': contract.id}) }}">edit</a>
+                    <a href="{{ path('app_contract_show', {'id': contract.id}) }}">Afficher</a>
+                    <a href="{{ path('app_contract_edit', {'id': contract.id}) }}">Editer</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="9">no records found</td>
+                <td colspan="9">pas de contrats trouvés</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_contract_new') }}">Create new</a>
-    <a href="{{ path('dashboard_index') }}">Back to Dashboard</a>
+    <a href="{{ path('app_contract_new') }}">Nouveau contrat</a>
+    <a href="{{ path('dashboard_index') }}">Retour au menu</a>
 {% endblock %}

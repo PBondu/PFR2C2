@@ -217,7 +217,7 @@
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
             <label for="contract_id">Rechercher un contrat à partir de son propre ID</label>
-            <input type="text" id="contract_id" name="contract_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquements"  required>
+            <input type="text" id="contract_id" name="contract_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquement"  required>
         </div>
         <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
@@ -266,7 +266,7 @@
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
             <label for="billing_id">Rechercher une facture à partir de l'ID d'un contrat</label>
-            <input type="text" id="billing_id" name="billing_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquements" required>
+            <input type="text" id="billing_id" name="billing_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquement" required>
         </div>
         <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
@@ -304,7 +304,7 @@
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
             <label for="customer_id">Rechercher un contrat à partir de l'ID d'un client</label>
-            <input type="text" id="customer_id" name="customer_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquements" required>
+            <input type="text" id="customer_id" name="customer_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquement" required>
         </div>
         <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
@@ -353,7 +353,7 @@
     <form method="post" action="{{ path('app_search_index') }}">
         <div class="form-group">
             <label for="vehicle_id">Rechercher un contrat à partir de l'ID d'un vehicule</label>
-            <input type="text" id="vehicle_id" name="vehicle_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquements" required>
+            <input type="text" id="vehicle_id" name="vehicle_id" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un ID valide : Chiffres uniquement" required>
         </div>
         <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
@@ -483,7 +483,7 @@
     <form method="post" action="{{ path('app_search_index') }}">
       <div class="form-group">
       <label for="km_input">Rechercher un véhicule ayant un kilométrage supérieur à celui entré</label>
-      <input type="text" id ="km_input" name="km_input" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un kilométrage valide : Chiffres uniquements" placeholder="Km" required>
+      <input type="text" id ="km_input" name="km_input" class="form-control" pattern="[1-9][0-9]{0,10}" title="Veuillez entrer un kilométrage valide : Chiffres uniquement" placeholder="Km" required>
       </div>
       <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>

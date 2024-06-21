@@ -23,41 +23,14 @@ class CustomerController extends AbstractController
 
     // Route en annotations
     #[Route('/', name: 'index')]
-    public function index(Request $request): Response
+    public function index(): Response
     {
-      
-        /*
-          RECHERCHE CUSTOMER BY ID
-        */
-        
         // Récupération de la DB par le service
         $customers = $this->mongoDBService->getDatabase('Customer')->customers->find()->toArray();
-
-        // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
-        $customerById = null;
-        // Condition pour vérifier que la méthode HTTP est POST
-        if ($request->isMethod('POST')) {
-          // Récupère l'input utilisateur et le stocke dans une variable
-            $mongoId = $request->request->get('mongo_id');
-          // Récupère la db grace au service et cherche l'objet concerné par l'id saisi ci-dessus
-            $customer = $this->mongoDBService->getDatabase('Customer')->customers->findOne(['_id' => (int)$mongoId]);
-          // Si l'objet est trouvé
-            if ($customer) {
-              // Transfère l'objet de l'array vers une variable
-                $customer_uid = $customer['_id']; 
-              // Fait correspondre un objet de billing avec la clef primaire de l'objet trouvé
-                $customerById = $this->contractRepository->findBy(['customer_uid' => $customer_uid]);
-            }
-        }
-
-        /*
-          FIN RECHERCHE CUSTOMER BY ID
-        */
 
         // Render des variables pour afficahge dans le twig
         return $this->render('customer/index.html.twig', [
             'customers' => $customers, // Affichage de base
-            'customerById' => $customerById, // Affichage de la recherche utilisateur
         ]);
     }
 

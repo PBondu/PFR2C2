@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Billing{% endblock %}
+{% block title %}Nouvelle Facture{% endblock %}
 
 {% block body %}
-    <h1>Create new Billing</h1>
+    <h1>Nouvelle Facture</h1>
 
     {{ include('billing/_form.html.twig') }}
 
-    <a href="{{ path('app_billing_index') }}">back to list</a>
+    <a href="{{ path('app_billing_index') }}">Retour à la liste</a>
 {% endblock %}

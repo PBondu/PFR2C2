@@ -18,36 +18,11 @@ class ContractController extends AbstractController
 {
   // Route en annotations
   #[Route('/', name: 'app_contract_index', methods: ['GET'])]
-  public function index(ContractRepository $contractRepository, Request $request, BillingRepository $billingRepository): Response
+  public function index(ContractRepository $contractRepository): Response
   {
-
-    /*
-        RECHERCHE CONTRACT A PARTIR ID CONTRAT
-    */
-    // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
-    $contractById = null;
-    // Condition pour vérifier que la méthode HTTP est POST
-    if ($request->isMethod('POST')) {
-
-      // Récupère l'input utilisateur et le stocke dans une variable
-      $id_from_input = $request->request->get('contract_id');
-      // Cherche l'objet concerné par l'id saisi ci-dessus
-      $contractArray = $contractRepository->findBy(array('id' => (int)$id_from_input));
-      // Si l'objet est trouvé
-      if ($contractArray) {
-        // Fait correspondre un objet de billing avec la clef primaire de l'objet trouvé
-        $contractById = $contractArray;
-      }
-    }
-    /*
-        FIN RECHERCHE CONTRACT
-    */
-
     // Render des variables pour afficahge dans le twig
     return $this->render('contract/index.html.twig', [
       'contracts' => $contractRepository->findAll(), // Affichage de la liste complète
-      'contractById' => $contractById,
-
     ]);
   }
 

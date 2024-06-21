@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Customer{% endblock %}
+{% block title %}Client{% endblock %}
 
 {% block body %}
-    <h1>Customer</h1>
+    <h1>Client</h1>
 
     <table class="table">
         <tbody>
@@ -30,10 +30,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('customer_edit', {'id': customer._id}) }}">edit</a>
+    <a href="{{ path('customer_edit', {'id': customer._id}) }}">Edition</a>
 
     {{ include('customer/_delete_form.html.twig') }}
 
-    <a href="{{ path('customer_index') }}">back to list</a>
+    <a href="{{ path('customer_index') }}">Retour au menu</a>
 
 {% endblock %}

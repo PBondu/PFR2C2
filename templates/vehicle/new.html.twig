@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create Vehicule{% endblock %}
+{% block title %}Nouveau Vehicule{% endblock %}
 
 {% block body %}
-    <h1>Create Vehicule</h1>
+    <h1>Nouveau Vehicule</h1>
     <form method="post" class="form_mongo">
 
         <label for="id" class="form-label required">Immatriculation</label>
@@ -15,7 +15,7 @@
         <label for="id" class="form-label required">Kilométrage</label>
         <input class="form-control mb-3" type="text" name="km" required>
 
-        <button class="btn" type="submit">Create</button>
+        <button class="btn" type="submit">Save</button>
     </form>
-    <a href="{{ path('vehicle_index') }}">Back to list</a>
+    <a href="{{ path('vehicle_index') }}">Retour au menu</a>
 {% endblock %}

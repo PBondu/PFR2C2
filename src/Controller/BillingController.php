@@ -15,36 +15,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class BillingController extends AbstractController
 {
     #[Route('/', name: 'app_billing_index', methods: ['GET'])]
-    public function index(BillingRepository $billingRepository, Request $request): Response
+    public function index(BillingRepository $billingRepository): Response
     {
-/*
-        RECHERCHE CONTRACT A PARTIR ID CONTRAT
-      */
-      // Init et permet de ne pas lancer de valeurs dans le twig si l'objet n'est pas trouvé
-      $billSelected = null;
-      // Condition pour vérifier que la méthode HTTP est POST
-      if ($request->isMethod('POST')) {
-        
-          // Récupère l'input utilisateur et le stocke dans une variable
-          $bill_id = $request->request->get('bill_id');
-          // Cherche l'objet concerné par l'id saisi ci-dessus
-          $billArray = $billingRepository->findBy(array('id' => (int)$bill_id));
-          // Si l'objet est trouvé
-          if ($billArray) {
-              // Fait correspondre un objet de billing avec la clef primaire de l'objet trouvé
-              $billSelected = $billArray;
-          }else {
-
-          }
-      }
-      /*
-        FIN RECHERCHE CONTRACT
-      */
-      
+    
         // Render des variables pour afficahge dans le twig
         return $this->render('billing/index.html.twig', [
           'billings' => $billingRepository->findAll(), // Affichage de la liste complète
-          'billSelected' => $billSelected,
       ]);
     }
 

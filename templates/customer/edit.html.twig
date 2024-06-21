@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Customer{% endblock %}
+{% block title %}Edition Client{% endblock %}
 
 {% block body %}
-    <h1>Edit Customer</h1>
+    <h1>Edition Client</h1>
     <form method="post" class="form_mongo">
         {# <label for="id" class="form-label required">Customer id</label>
         <input class="form-control mb-3" type="text" name="id" value="{{ customer.id }}" required> #}
@@ -20,8 +20,8 @@
         <label for="permit_number" class="form-label required">permit_number</label>
         <input class="form-control mb-3" type="text" name="permit_number" value="{{ customer.permit_number }}" required>
         
-        <button class="btn" type="submit">Update</button>
+        <button class="btn" type="submit">Save</button>
     </form>
     {{ include('customer/_delete_form.html.twig') }}
-    <a href="{{ path('customer_index') }}">Back to list</a>
+    <a href="{{ path('customer_index') }}">Retour à la liste</a>
 {% endblock %}
